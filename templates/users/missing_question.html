@@ -16,10 +16,10 @@
 
 <div class="accordion" id="accordionExample">
   {% for question in questions %}
-  <div class="card">
+  <div class="card m-3" style="border-radius: 5px;">
     <div class="card-header" id="heading{{question.question.id}}">
       <h5 class="mb-0">
-        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{question.question.id}}" aria-expanded="true" aria-controls="collapse{{question.question.id}}">{{question.question.question}} 
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{question.question.id}}" aria-expanded="true" aria-controls="collapse{{question.question.id}}" style="width: 100%;"><span style="white-space: pre-wrap;">{{question.question.question}}</span> 
           {% if question.value == None%}
               <span class="badge badge-danger">Not Attempted</span>
           {% else %}
@@ -36,7 +36,7 @@
             <div class="col-md-12">
               <div class="form-group">
                 <strong>{% trans 'Description' %}</strong>
-                <p>{{question.question.description}}</p>
+                <p style="white-space: pre-wrap;">{{question.question.description}}</p>
               </div>
             </div>
           </div>

@@ -20,14 +20,13 @@
             <div class="card bg-secondary shadow">
                 <div class="card-header bg-white border-0">
                   <div class="row ">
-                    <div class="col-2 ">
+                    <div class="col-6 ">
                       <h3 class="mb-0">{% trans 'New Form' %}</h3>
                     </div>
-                    <div class="col-10" style="display:flex;gap:1rem;align-items:center;justify-content:right;width:100%;">
+                    <div class="col-6" style="display:flex;gap:1rem;align-items:center;justify-content:right;width:100%;">
                         <a href="{% url 'view_form' form.code %}">
                         <img src="{% static 'stakeholders/Icon/eye.png' %}" alt="Preview icon" title = "Preview" class="nav-form-menu-icon big-screen" />
                         </a>
-                        <img src="{% static 'stakeholders/Icon/send.png' %}" alt ="Send icon" title = "Send" class="nav-form-menu-icon small-screen" id="send-form-btn" />
                         <img src="{% static 'stakeholders/Icon/setting.png' %}" alt="Setting icon" title = "Setting" class="nav-form-menu-icon open-setting" />
                         <button class = "btn send-form-btn big-screen" title = "Send" id="send-form-btn">Send</button>
                     </div>

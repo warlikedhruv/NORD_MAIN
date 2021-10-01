@@ -15,7 +15,7 @@
     <!-- ------------ -->
     <form method="post" enctype="multipart/form-data" action="{% url 'add-data' %}" style="display: flex; justify-content: center">
       {% csrf_token %}
-      <div style="display: inline-block; margin-right: 10px">
+      <div style="width: 100%;">
         <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem">
           {% for field in form.visible_fields %}
           <div class="field-control" style="display: inline-block; margin-right: 10px">{{ field }}</div>
@@ -43,8 +43,8 @@
   <div class="card m-3">
     <div class="card-header" id="heading{{question.question.id}}">
       <h5 class="mb-0">
-        <button class="btn btn-hover-text-white btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{question.question.id}}" aria-expanded="false" aria-controls="collapse{{question.question.id}}">
-          {{question.question.question}} {% if question.value == None%}
+        <button class="btn btn-hover-text-white btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapse{{question.question.id}}" aria-expanded="false" aria-controls="collapse{{question.question.id}}" style="width: 100%;">
+          <span style="width: 100%;white-space: pre-wrap;">{{question.question.question}}</span> {% if question.value == None%}
           <span class="badge badge-danger">Not Attempted</span>
           {% else %}
           <span class="badge badge-success">Attempted</span>

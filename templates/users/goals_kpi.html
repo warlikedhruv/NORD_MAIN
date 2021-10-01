@@ -1,5 +1,4 @@
-{% extends 'layouts/base.html' %} {% load i18n %} {% block title %} {% trans
-'Review Data - NordESG' %} {% endblock title %}
+{% extends 'layouts/base.html' %} {% load i18n %} {% block title %} Goals-kpi - NordESG {% endblock title %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}{% endblock stylesheets %} {% block content %}
@@ -26,7 +25,7 @@
       style="display: flex; justify-content: center"
     >
       {% csrf_token %}
-      <div style="display: inline-block; margin-right: 10px">
+      <div style="width: 100%;">
         <div
           class="form-group"
           style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem"
@@ -43,17 +42,17 @@
             class="field-control"
             style="display: inline-block; margin-right: 10px; float: left"
           >
-            <button
-              id="question_filter_button"
-              type="submit"
-              name="question-filter"
-              class="btn btn-primary mt-0"
-              style="width: 100%"
-            >
-              {% trans 'Get Data' %}
-            </button>
-          </div>
         </div>
+      </div>
+      <button
+        id="question_filter_button"
+        type="submit"
+        name="question-filter"
+        class="btn btn-primary mt-0"
+        style="width: 100%"
+      >
+        {% trans 'Get Data' %}
+      </button>
       </div>
     </form>
   </div>
@@ -210,6 +209,7 @@
           }
           $("div.spanner").toggleClass("show");
           $("#id_category").removeAttr("disabled");
+          $("#id_sub_category").attr('disabled','disabled');
         },
       });
     });
@@ -220,6 +220,7 @@
       var optionSelected = $(this).find("option:selected");
       var FrameworkSelected = $("#id_framework").find("option:selected");
       var valueSelected = optionSelected.val();
+      console.log("---->",valueSelected);
       var name = optionSelected.text();
       data = { framework:FrameworkSelected.val(),name: name, id_value: valueSelected };
       console.log(data);
@@ -244,11 +245,14 @@
   $(document).ready(() => {
     var optionSelected = $("#id_category").find("option:selected");
     var FrameworkSelected = $("#id_framework").find("option:selected");
-    var valueSelected = optionSelected.val();
+    var valueSelected1 = optionSelected.val();
+
+    var subcategorSelected = $("#id_sub_category").find("option:selected");
+    var subValueSelected = subcategorSelected.val();
     var name = optionSelected.text();
-    if (valueSelected) {
-      data = { name: name, id_value: valueSelected,framework:FrameworkSelected.val()};
-      $("div.spanner").toggleClass("show");
+    if (valueSelected1) {
+      data = { name: name, id_value: valueSelected1,framework:FrameworkSelected.val()};
+      $("div.spanner").addClass("show");
 
       $.ajax({
         type: "get",
@@ -257,9 +261,13 @@
         success: function (result) {
           $("#id_sub_category option").remove();
           for (var i = result.length - 1; i >= 0; i--) {
-            $("#id_sub_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+            if (result[i].id == subValueSelected){
+              $("#id_sub_category").append("<option selected value=" + result[i].id + ">" + result[i].name + "</option>");
+            }else{ 
+              $("#id_sub_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+            }
           }
-          $("div.spanner").toggleClass("show");
+          // $("div.spanner").toggleClass("show");
           $("#id_sub_category").removeAttr("disabled");
         },
       });
@@ -280,9 +288,13 @@
         success: function (result) {
           $("#id_category option").remove();
           for (var i = result.length - 1; i >= 0; i--) {
-            $("#id_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+            if (result[i].id == valueSelected1){
+              $("#id_category").append("<option selected value=" + result[i].id + ">" + result[i].name + "</option>");
+            }else{
+              $("#id_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+            }
           }
-          // $("div.spanner").toggleClass("show");
+          $("div.spanner").removeClass("show");
           $("#id_category").removeAttr("disabled");
         },
       });

@@ -40,30 +40,6 @@
                 {% endfor %}
               </ul>
             </div>
-
-            <!-- <li class="nav-item dropdown">
-              <a target="_blank" class="nav-link dropdown-toggle nav-link-icon" data-toggle="dropdown" href="#">
-                <i class="fas fa-language"></i>
-                <span class="nav-link-inner--text">{% trans 'Language' %}</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-dark" style="width:35px;">
-                <form class="c-header-nav-item">
-                  {% csrf_token %}
-                  <div class="form-group">
-                      <select name="language" class="form-control form-control-sm mt-3">
-                      {% for language in languages %}
-                      <option value="{{ language.code }}"
-                          {% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
-                          {{ language.name_local }} 
-                          <a href="{% url 'change_language' ln=language %}"></a>
-                      </option>
-                      {% endfor %}
-                      </select>
-                  </div>
-                </form>
-              </ul>
-              <ul class="dropdown-menu">2</ul>
-            </li> -->
         </ul>
         
         <!-- User -->

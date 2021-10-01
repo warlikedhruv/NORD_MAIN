@@ -17,7 +17,7 @@
 <!-- ------------ -->
 <form method="post" enctype="multipart/form-data" action="{% url 'data-status' %}" style="display: flex; justify-content:center;">
   {% csrf_token %}
-  <div style="display: inline-block; margin-right: 10px">
+  <div style="width: 100%;">
     <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem;">
       {% for field in form.visible_fields %}
       <div class="field-control" style="display: inline-block; margin-right: 10px; ">{{ field }}</div>
@@ -95,19 +95,24 @@
     $("#id_framework").change(function () {
       var optionSelected = $(this).find("option:selected");
       var valueSelected = optionSelected.val();
-      var country_name = optionSelected.text();
-      data = { cnt: country_name, id_value: valueSelected };
+      var name = optionSelected.text();
+      data = { name: name, id_value: valueSelected };
+      console.log(data);
       $("div.spanner").toggleClass("show");
-      ajax("/getcategories", data, function (result) {
-        console.log(result);
-        $("#id_category option").remove();
-        for (var i = result.length - 1; i >= 0; i--) {
-          $("#id_category").append(
-            "<option value=" + result[i].id + ">" + result[i].name + "</option>"
-          );
-        }
-        $("div.spanner").toggleClass("show");
-        $("#id_category").removeAttr("disabled");
+
+      $.ajax({
+        type: "get",
+        url: "/getcategories",
+        data: data,
+        success: function (result) {
+          $("#id_category option").remove();
+          for (var i = result.length - 1; i >= 0; i--) {
+            $("#id_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+          }
+          $("div.spanner").toggleClass("show");
+          $("#id_category").removeAttr("disabled");
+          $("#id_sub_category").attr('disabled','disabled');
+        },
       });
     });
   });
@@ -115,39 +120,58 @@
   $(document).ready(function () {
     $("#id_category").change(function () {
       var optionSelected = $(this).find("option:selected");
+      var FrameworkSelected = $("#id_framework").find("option:selected");
       var valueSelected = optionSelected.val();
-      var country_name = optionSelected.text();
-      data = { cnt: country_name, id_value: valueSelected };
+      console.log("---->",valueSelected);
+      var name = optionSelected.text();
+      data = { framework:FrameworkSelected.val(),name: name, id_value: valueSelected };
+      console.log(data);
       $("div.spanner").toggleClass("show");
-      ajax("/getsubcategories", data, function (result) {
-        console.log(result);
-        $("#id_sub_category option").remove();
-        for (var i = result.length - 1; i >= 0; i--) {
-          $("#id_sub_category").append(
-            "<option value=" + result[i].id + ">" + result[i].name + "</option>"
-          );
-        }
-        $("div.spanner").toggleClass("show");
-        $("#id_sub_category").removeAttr("disabled");
+
+      $.ajax({
+        type: "get",
+        url: "/getsubcategories",
+        data: data,
+        success: function (result) {
+          $("#id_sub_category option").remove();
+          for (var i = result.length - 1; i >= 0; i--) {
+            $("#id_sub_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+          }
+          $("div.spanner").toggleClass("show");
+          $("#id_sub_category").removeAttr("disabled");
+        },
       });
     });
   });
 
   $(document).ready(() => {
     var optionSelected = $("#id_category").find("option:selected");
-    var valueSelected = optionSelected.val();
-    var country_name = optionSelected.text();
-    if (valueSelected) {
-      data = { cnt: country_name, id_value: valueSelected };
-      $("div.spanner").toggleClass("show");
-      ajax("/getsubcategories", data, function (result) {
-        console.log(result);
-        $("#id_sub_category option").remove();
-        for (var i = result.length - 1; i >= 0; i--) {
-          $("#id_sub_category").append(
-            "<option value=" + result[i].id + ">" + result[i].name + "</option>"
-          );
-        }
+    var FrameworkSelected = $("#id_framework").find("option:selected");
+    var valueSelected1 = optionSelected.val();
+
+    var subcategorSelected = $("#id_sub_category").find("option:selected");
+    var subValueSelected = subcategorSelected.val();
+    var name = optionSelected.text();
+    if (valueSelected1) {
+      data = { name: name, id_value: valueSelected1,framework:FrameworkSelected.val()};
+      $("div.spanner").addClass("show");
+
+      $.ajax({
+        type: "get",
+        url: "/getsubcategories",
+        data: data,
+        success: function (result) {
+          $("#id_sub_category option").remove();
+          for (var i = result.length - 1; i >= 0; i--) {
+            if (result[i].id == subValueSelected){
+              $("#id_sub_category").append("<option selected value=" + result[i].id + ">" + result[i].name + "</option>");
+            }else{ 
+              $("#id_sub_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+            }
+          }
+          // $("div.spanner").toggleClass("show");
+          $("#id_sub_category").removeAttr("disabled");
+        },
       });
     } else {
       $("#id_sub_category").attr("disabled", "disabled");
@@ -156,18 +180,25 @@
     var optionSelected = $("#id_framework").find("option:selected");
     console.log(optionSelected);
     var valueSelected = optionSelected.val();
-    var country_name = optionSelected.text();
+    var name = optionSelected.text();
     if (valueSelected) {
-      data = { cnt: country_name, id_value: valueSelected };
-      ajax("/getcategories", data, function (result) {
-        console.log(result);
-        $("#id_category option").remove();
-        for (var i = result.length - 1; i >= 0; i--) {
-          $("#id_category").append(
-            "<option value=" + result[i].id + ">" + result[i].name + "</option>"
-          );
-        }
-        $("div.spanner").toggleClass("show");
+      data = { name: name, id_value: valueSelected };
+      $.ajax({
+        type: "get",
+        url: "/getcategories",
+        data: data,
+        success: function (result) {
+          $("#id_category option").remove();
+          for (var i = result.length - 1; i >= 0; i--) {
+            if (result[i].id == valueSelected1){
+              $("#id_category").append("<option selected value=" + result[i].id + ">" + result[i].name + "</option>");
+            }else{
+              $("#id_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+            }
+          }
+          $("div.spanner").removeClass("show");
+          $("#id_category").removeAttr("disabled");
+        },
       });
     } else {
       $("#id_category").attr("disabled", "disabled");
