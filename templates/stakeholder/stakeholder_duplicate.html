@@ -1,0 +1,69 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+{% block title %} {% trans 'Stakeholders - NordESG' %} {% endblock title %}
+{% load static %}
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'stakeholders/index/HurlUI.css' %}">
+    <link rel="stylesheet" href="{% static 'stakeholders/index/style.css' %}">
+{% endblock stylesheets %}
+
+{% block content %}
+
+
+
+<div class="container-fluid">
+    <div class="topnav nav-effect">
+        <div class="nav-padding">
+            <img src = "{% static 'stakeholders/Icon/nord_logo_1.png' %}" alt = "Nord_Logo_1" class="navbar-icon form-icon" title = "Forms">
+            <span class="nav-text" title = "Forms"><a href = "{% url 'stakeholders1' %}" class="nav-link">Stake Holder Form</a></span>
+        </div>
+    </div>
+    <div class="create-form">
+        <div class="container">
+            <p class="forms-label">Start a new form</p>
+            <div class="form-template-box">
+                <img src = "{% static 'stakeholders/Icon/blank-form.png' %}" alt = "Blank form" title = "Blank form" id="create-blank-form">
+                <span class="form-template-label">Blank Form</span>
+            </div>
+            <div class="form-template-box big-screen">
+                <img src = "{% static 'Template/contact_information.png' %}" alt = "Contact Information" title = "Contact Information" id="create-contact-form">
+                <span class="form-template-label">Contact Information</span>
+            </div>
+            <div class="form-template-box big-screen">
+                <img src = "{% static 'Template/customer_feedback.png' %}" alt = "Customer Feedback" title = "Customer Feedback" id="create-customer-feedback">
+                <span class="form-template-label">Customer Feedback</span>
+            </div>
+            <div class="form-template-box big-screen">
+                <img src = "{% static 'Template/customer_feedback.png' %}" alt = "Event Registration" title = "Event Registration" id="create-event-registration">
+                <span class="form-template-label">Event Registration</span>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="form-list">
+            <p class="forms-label">Your forms:</p>
+            {% for i in forms %}
+            <a href = "{% url 'edit_form' i.code %}" class="form-list-link">
+                <div class="form-box">
+                    <div class="form-list-title"><h5 class="form-list-title-text">{{i.title}}</h5></div>
+                    {% if i.createdAt == i.updatedAt %}
+                    <p class="form-list-timestamp">{{i.createdAt}}</p>
+                    {% else %}
+                    <p class="form-list-timestamp">{{i.updatedAt}}</p>
+                    {% endif %}
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+<script src = "{% static 'stakeholders/index/index.js' %}" defer></script>
+<script src="{% static 'stakeholders/lib/cookie.min.js' %}" defer></script>
+{% endblock javascripts %}

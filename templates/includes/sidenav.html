@@ -1,0 +1,206 @@
+{% load i18n %}
+  <nav class="navbar navbar-vertical fixed-left navbar-expand-md navbar-light bg-white" style="font-weight:600;font-family:'Barlow', sans-serif !important" id="sidenav-main">
+    <div class="container-fluid">
+      <!-- Toggler -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- Brand -->
+      <a class="navbar-brand pt-0" style="min-width:80px;height:80px;background-image: url(/static/assets/img/brand/logo_esg.svg);background-repeat: no-repeat;background-size: contain;background-position: center;">
+      </a>
+      <!-- User -->
+      <ul class="nav align-items-center d-md-none">
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="media align-items-center">
+              <span class="avatar avatar-sm rounded-circle">
+                    {% if user.image %}
+                        <img alt="Image placeholder" src="{{ user.image.url }}">
+                    {% else %}
+                        <i class="fas fa-user"></i>
+                    {% endif %}
+              </span>
+                <div class="media-body ml-2 d-none d-lg-block">
+                  <span class="mb-0 text-sm  font-weight-bold">
+                    {{ request.user.f_name }}
+                  </span>
+                </div>
+            </div>
+          </a>
+          <div class="dropdown-menu dropdown-menu-arrow dropdown-menu-right">
+            <div class=" dropdown-header noti-title">
+              <h6 class="text-overflow m-0">{% trans 'Welcome!' %}</h6>
+            </div>
+            <a href="#" class="dropdown-item">
+              <i class="ni ni-single-02"></i>
+              <span>{% trans 'My profile' %}</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="{% url 'user-logout' %}" class="dropdown-item">
+              <i class="ni ni-user-run"></i>
+              <span>{% trans 'Logout' %}</span>
+            </a>
+          </div>
+        </li>
+      </ul>
+      <!-- Collapse -->
+      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+        <!-- Collapse header -->
+        <div class="navbar-collapse-header d-md-none">
+          <div class="row">
+            <div class="col-6 collapse-brand">
+              <a href="#">
+                <img src="/static/assets/img/brand/logo_esg.svg" width="fit-content" height="150" alt="NordESG Logo">
+              </a>
+            </div>
+            <div class="col-6 collapse-close">
+              <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#sidenav-collapse-main" aria-controls="sidenav-main" aria-expanded="false" aria-label="Toggle sidenav">
+                <span></span>
+                <span></span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Navigation -->
+        <ul class="navbar-nav">
+         {% if user.is_authenticated and user.is_superuser %}
+          <li class="nav-item">
+              <a class=" nav-link" href="{% url 'admin-dashboard' %}"> <i class="ni ni-tv-2 text-primary"></i>{% trans 'Dashboard' %}
+              </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'organization' %}">
+              <i class="fas fa-building text-yellow"></i>{% trans 'Organizations' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'user-detail' %}">
+              <i class="fas fa-users text-info"></i>{% trans 'Users' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'question' %}">
+              <i class="fas fa-question text-dark"></i>{% trans 'Questions' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'stakeholder' %}">
+              <i class="fas fa-people-carry text-success"></i>{% trans 'StakeHolders' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'view-docs' %}">
+              <i class="fas fa-address-book text-purple"></i>{% trans 'Help' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'user-logout' %}">
+              <i class="ni ni-user-run text-red"></i>{% trans 'Logout' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin:index' %}">
+              <i class="fas fa-user-shield text-blue"></i>{% trans 'SuperUser' %}
+            </a>
+          </li>
+        {% elif user.is_authenticated and user.is_staff %}
+          <li class="nav-item">
+              <a class=" nav-link" href="{% url 'admin-dashboard' %}"> <i class="ni ni-tv-2 text-primary"></i>{% trans 'Dashboard' %}
+              </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'organization' %}">
+              <i class="fas fa-building text-yellow"></i>{% trans 'Organizations' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'user-detail' %}">
+              <i class="fas fa-users text-info"></i>{% trans 'Users' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'question' %}">
+              <i class="fas fa-question text-dark"></i>{% trans 'Questions' %}
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'stakeholder' %}">
+              <i class="fas fa-people-carry text-success"></i>{% trans 'StakeHolders' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'view-docs' %}">
+              <i class="fas fa-address-book text-purple"></i>{% trans 'Help' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'user-logout' %}">
+              <i class="ni ni-user-run text-red"></i>{% trans 'Logout' %}
+            </a>
+          </li>
+        {% elif user.is_authenticated and user.is_active %}
+          <li class="nav-item">
+              <a class=" nav-link" href="{% url 'dashboard' %}"> <i class="ni ni-tv-2 text-primary"></i>{% trans 'Dashboard' %}
+              </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'data-status' %}">
+              <i class="fas  fa-file text-yellow"></i>{% trans 'Data Status' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'add-data' %}">
+              <i class="fas fa-list text-pink"></i>{% trans 'Add Data' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'review-data' %}">
+              <i class="fas fa-check text-green"></i>{% trans 'Review Data' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'goals-kpi' %}">
+              <i class="fas fa-tachometer-alt text-grey"></i>{% trans 'Goals and KPI' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'stakeholders1' %}">
+              <i class="fas fa-people-carry text-success"></i>{% trans 'StakeHolders' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'report' %}">
+              <i class="fas fa-download text-info"></i>{% trans 'Report' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'todos' %}">
+              <i class="fas fa-tasks text-info"></i>{% trans 'TODOS' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'view-docs' %}">
+              <i class="fas fa-address-book text-purple"></i>{% trans 'Help' %}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'user-logout' %}">
+              <i class="ni ni-user-run text-red"></i>{% trans 'Logout' %}
+            </a>
+          </li>
+        {% else %}
+            <li class="nav-item">
+                <a>
+                  <i class="ni ni-user-run text-red"></i>{% trans 'You don’t have permission to view or edit anything.' %}
+                </a>
+              </li>
+        {% endif %}
+        </ul>
+
+        <!-- Divider -->
+        <hr class="my-3">
+        <!-- Heading -->
+      </div>
+    </div>
+  </nav>

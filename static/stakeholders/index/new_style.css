@@ -1,0 +1,399 @@
+.form-template-box{
+    margin: 5px 30px 10px 0;
+    float: left;
+    padding:.5rem;
+    border:1px solid transparent;
+}
+
+.form-template-box img{
+    width: 10em;
+    height: 7em;
+    float: left;
+}
+
+.form-template-box:hover{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: .5rem;
+}
+
+.vertical-align{
+    display:flex;
+    gap: .2rem;
+    text-align:center;
+    flex-direction:column;
+}
+
+.nav-form-menu-icon{
+    width: 1.5rem;
+    margin: 10px 15px;
+    cursor: pointer;
+    float: left;
+}
+
+.active{
+    color:rgb(0, 132, 223);
+    font-weight: bold;
+
+    font-size: 0.8rem;
+}
+
+/* form styling */
+
+.stake-box {
+    max-width:850px;
+    margin:0 auto;
+    display:grid;
+    gap: 1rem;
+}
+
+
+.input-style-1{
+    border-bottom: 2px solid black;
+    border-radius: 10px;
+    width: 100%;
+    padding: .25rem .75rem;
+}
+/* form styling end */
+
+.margin-top-bottom{
+	margin: 20px 0;
+}
+
+.box{
+	padding: 10px;
+	border: 1px solid #999;
+	border-radius: 5px;
+	width: -webkit-fill-available;
+	width: -moz-available;
+}
+
+.question-box{
+    background-color: #FFF;
+}
+.form-title-box{
+    border-bottom: 1px solid #ddd;
+}
+
+.form-title{
+    font-size: 2rem;
+
+    font-weight: normal;
+    margin: 10px;
+    width: -webkit-fill-available;
+    width: -moz-available;
+}
+
+.edit-on-click{
+    border: none;
+    font-size: 1.2rem;
+    transition: 1s;
+    overflow-y: hidden;
+}
+
+.edit-on-click:focus{
+    outline: none !important;
+    border-bottom: 1px solid #202124;
+}
+
+.form-description{
+    font-size: 1rem;
+
+    margin: 10px;
+    width: -webkit-fill-available;
+    width: -moz-available;
+}
+
+.collect-email{
+    margin: 10px;
+}
+\
+.question-title{
+
+    font-size: 1.3rem;
+    font-weight: normal;
+}
+
+.require-star{
+    color: #E71C23;
+}
+
+.require-email-edit{
+    padding: 5px;
+    border: none;
+    border-bottom: 1px solid #84878b;
+    width: 50%;
+    cursor: not-allowed;
+}
+
+.collect-email-desc{
+    color: #70757a;
+    margin: 10px 0;
+}
+
+.question-title{
+    font-size: 1.5rem;
+    width: 65%;
+}
+
+
+
+.question-type-select{
+    width: calc(35% - 8px);
+    padding: 5px 35px 5px 5px;
+    font-size: 1.2rem;
+    border: 1px solid #ccc;
+    height: 34px;
+}
+
+.question-type-select::-ms-expand{
+    display: none;
+}
+
+
+.choices{
+    margin: 10px 0;
+}
+
+.edit-choice{
+    display: inline;
+    width: 80%;
+    border: none;
+    overflow-y: hidden;
+
+}
+
+.remove-option{
+    display: inline;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.add-option{
+    cursor: pointer;
+    color: #70757a;
+}
+
+.question-option-icon{
+    width: 1.5rem;
+    cursor: pointer;
+}
+
+.answers{
+    margin: 5px;
+
+}
+
+.short-answer{
+    width: 50%;
+    border: none;
+    padding: 5px;
+    border-bottom: 1px solid #70757a;
+}
+
+.long-answer{
+    width: -webkit-fill-available;
+    width: -moz-available;
+    border: none;
+    padding: 5px;
+    border-bottom: 1px solid #70757a;
+}
+
+.choice-option{
+    padding: 10px;
+    display: block;
+    border-top: 1px solid #ccc;
+}
+
+.question-options{
+    background-color: #fff;
+    margin: 20px 0;
+    position: fixed;
+    bottom: 10%;
+    right: 0;
+    border: 1px solid #84878b;
+}
+
+.form-option-icon{
+    width: 2rem;
+    margin: 5px;
+    cursor: pointer;
+    display: block;
+}
+
+.modal{
+    display: none;
+    position: fixed;
+    z-index: 6;
+    padding: calc(10vh - 20px) 0;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content{
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-height: 80%;
+    overflow: auto;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+.modal-close-btn{
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal-close-btn:hover, .modal-close-btn:focus{
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-title{
+
+    font-size: 1.2rem;
+    border-bottom: 1px solid rgb(233, 232, 232);
+    margin-bottom: 0;
+}
+
+.modal-subtitle{
+
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.setting-form-label{
+
+}
+
+.modal-division{
+    margin: 30px 0;
+}
+
+@media only screen and (max-width: 768px){
+    .nav-form-title{
+        width: 100px;
+    }
+
+    .form-list-link, .form-box{
+        width: -webkit-fill-available;
+        width: -moz-available;
+    }
+    .modal{
+        padding: 0;
+    }
+
+    .modal-content{
+        max-width: none;
+        max-height: none;
+        width: -webkit-fill-available;
+        width: -moz-available;
+        height: calc(100% - 40px);
+        border-radius: 0%;
+    }
+    .question-title, .question-title-score{
+        width: 100%;
+    }
+    .question-type-select{
+        width: 100%;
+        display: block;
+    }
+
+    .big-screen{
+        display: none;
+    }
+    .navigation{
+        width: calc((100% - 60px)/3) !important;
+    }
+    .question-score{
+        max-width: 100%;
+        width: 100%;
+    }
+    .input-score{
+        width: 50px;
+    }
+}
+
+
+.form-group{
+	margin: 16px 14px;
+}
+
+
+.text-danger{color: #E71C23 !important;}
+
+.danger-zone{
+    font-weight: bold;
+
+    font-size: 1.4rem;
+}
+
+.delete-form-title{
+    margin: 0;
+}
+
+.delete-form-description{
+    margin: 0;
+
+}
+
+.delete-form-btn{
+    font-size: 1rem;
+
+    padding: 3px !important;
+    background-color: #E71C23;
+    color: #fff;
+}
+
+
+
+/* This file is for overriding some styling */
+
+.btn-2{
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    color:black;
+    opacity: 1;
+    font-weight: bold;
+}
+.btn-2:hover{
+    opacity: 1;
+    border: 1px solid black;
+    background-color: white;
+    transition: linear .3s;
+}
+
+.link{
+    font-size: 1rem;
+    opacity: 0.9;
+}
+.link:active{
+    font-size: 1rem;
+}
+.link:hover{
+    opacity:0.9;
+}
+
+.li-style-1{
+    margin:1rem auto;
+}
+
+.a-style-1{
+    width: 100%;
+    font-size: 1.2rem;
+    text-decoration: underline;
+}

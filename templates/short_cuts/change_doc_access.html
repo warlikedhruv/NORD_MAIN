@@ -1,0 +1,46 @@
+{% if "private" in docs.doc_type|safe %}
+	<a href="#myModal" data-toggle="modal"><span class="badge badge-secondary">{{ docs.doc_type }}</span></a>
+	<div id="myModal" class="modal fade">
+		<div class="modal-dialog modal-confirm">
+			<div class="modal-content">
+				<div class="modal-header flex-column">
+					<div class="icon-box">
+						<i class="material-icons">lock_open</i>
+					</div>						
+					<h4 class="modal-title w-100">Do you want to make this document public?</h4>	
+					<a class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
+				</div>
+				<div class="modal-body">
+					<p>It will allow all users to access this file.</p>
+				</div>
+				<div class="modal-footer justify-content-center">
+					<a  class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+					<a  class="btn btn-danger" href="{% url 'change-doc-type' docs.id %}">Yes, Change Access</a>
+				</div>
+			</div>
+		</div>
+	</div>     
+{% else %}
+	<a href="#myModal2" data-toggle="modal"><span class="badge badge-success">{{ docs.doc_type }}</span></a>
+	<div id="myModal2" class="modal fade">
+		<div class="modal-dialog modal-confirm">
+			<div class="modal-content">
+				<div class="modal-header flex-column">
+					<div class="icon-box">
+						<i class="material-icons">lock</i>
+					</div>						
+					<h4 class="modal-title w-100">Do you want to make this document private?</h4>	
+					<a class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
+				</div>
+				<div class="modal-body">
+					<p>Only granted user can access this file.</p>
+				</div>
+				<div class="modal-footer justify-content-center">
+					<a  class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+					<a  class="btn btn-danger" href="{% url 'change-doc-type' docs.id %}">Yes, Change Access</a>
+				</div>
+			</div>
+		</div>
+	</div>     
+{% endif %}
+<!-- Modal HTML -->

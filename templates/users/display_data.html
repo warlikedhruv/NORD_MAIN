@@ -1,0 +1,86 @@
+{% extends 'layouts/base.html' %} {% load i18n %} {% block title %} {% trans 'Data - NordESG' %} {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<div class="container">
+  <div class="col-md-12 card mt-5 shadow">
+
+    <div class="col card-body p-md-3 container container-fluid">
+      <p class="h3"><pre  style="font-weight: bold;text-align: center;font-size: 1rem;word-wrap: normal;">{{question.question.question}}</pre></p>
+      <p class="h2"><pre style="white-space:pre-wrap">{{question.question.description}}</pre></p>
+      <br />
+  <br />
+  {% if isNumber %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <canvas id="myChart1"></canvas>
+      </div>
+      <div class="col-sm-6">
+        <canvas id="myChart2"></canvas>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="table-responsive">
+    <table class="table align-items-center table-flush" style="max-width:60">
+    <thead>
+      <tr>
+        <th scope="col">Year</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody >
+      {% for year,value in answers %}
+      <tr>
+        <td>{{year}}</td>
+        <td style="max-width: 60vw">{{value}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  
+</div>
+{% endif %}
+  <br />
+  <br />
+  <div class="text-center">
+    <a class="btn btn-primary" href="{% url 'review-data' %}">Go Back</a>
+  </div>
+</div>
+</div>
+</div>
+<script>
+  const labels = {{years}};
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: 'ABC',
+      backgroundColor: '{{chart_color}}',
+      borderColor: '{{chart_color}}',
+      data: {{values}},
+    }]
+  };
+  const config1 = {
+    type: 'line',
+    data: data,
+    options: {}
+  };
+    const config2 = {
+    type: 'bar',
+    data: data,
+    options: {}
+  };
+    var myChart = new Chart(
+      document.getElementById('myChart1'),
+      config1
+    );
+        var myChart = new Chart(
+      document.getElementById('myChart2'),
+      config2
+    );
+</script>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

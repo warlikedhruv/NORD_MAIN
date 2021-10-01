@@ -1,0 +1,217 @@
+{% extends 'layouts/base-form.html' %}
+{% load i18n %}
+{% block title %} {% trans 'Stakeholders - NordESG' %} {% endblock title %}
+{% load static %}
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'stakeholders/index/new_style.css' %}">
+{% endblock stylesheets %}
+
+{% block javascripts %}
+<script src="{% static 'stakeholders/index/form.js' %}"></script>
+<script src="{% static 'stakeholders/lib/cookie.min.js' %}"></script>
+{% endblock javascripts %}
+
+{% block content %}
+
+<div class="container-fluid pt-5">
+    <div class="row">
+        <div class="col-xl-12 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <div class="card-header bg-white border-0">
+                  <div class="row ">
+                    <div class="col-2 ">
+                      <h3 class="mb-0">{% trans 'New Form' %}</h3>
+                    </div>
+                    <div class="col-10" style="display:flex;gap:1rem;align-items:center;justify-content:right;width:100%;">
+                        <a href="{% url 'view_form' form.code %}">
+                        <img src="{% static 'stakeholders/Icon/eye.png' %}" alt="Preview icon" title = "Preview" class="nav-form-menu-icon big-screen" />
+                        </a>
+                        <img src="{% static 'stakeholders/Icon/send.png' %}" alt ="Send icon" title = "Send" class="nav-form-menu-icon small-screen" id="send-form-btn" />
+                        <img src="{% static 'stakeholders/Icon/setting.png' %}" alt="Setting icon" title = "Setting" class="nav-form-menu-icon open-setting" />
+                        <button class = "btn send-form-btn big-screen" title = "Send" id="send-form-btn">Send</button>
+                    </div>
+
+                  </div>
+                    <div class="row pt-4">
+                        <div class="" style="display: flex;gap: 3rem; justify-content:center; width:100%">
+                            <button class="btn-2">Questions</button>
+                            <button class="btn-2 active"><a href = "{% url 'score' form.code %}" class="link">Metrices</a></button>
+                            <button class="btn-2 score"><a href = "{% url 'responses' form.code %}" class="link">Responses</a></button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-body" >
+                    <div class="row"></div>
+                    <div class="container">
+                            <span id="bg-color" style="display: none;">{{form.background_color}}</span>
+                            <span id="text-color" style="display: none;">{{form.text_color}}</span>
+
+
+                                <div class="margin-top-bottom box question-box" id="form-head">
+                                    <div class="form-title-box">
+                                        <input type="text" class="form-title edit-on-click input-form-title txt-clr" value="{{form.title}}">
+                                    </div>
+                                    <textarea class="form-description edit-on-click textarea-adjust txt-clr" rows="1" placeholder="Form description" spellCheck = "false"
+                                    id="input-form-description">{{form.description}}</textarea>
+                                    {% if form.collect_email %}
+                                    <div class="collect-email txt-clr">
+                                        <h3 class="question-title">Email address <span class="require-star">*</span></h3>
+                                        <input type="text" autocomplete="off" aria-label="Valid email address" disabled dir = "auto" class="require-email-edit txtColor"
+                                        placeholder = "Valid email address" />
+                                        <p class="collect-email-desc">This form is collecting email addresses. <span class="open-setting">Change settings</span></p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                    </div>
+
+                    <div id="question-container">
+                        {% for question in form.questions.all %}
+                        <div class="margin-top-bottom box question-box question" data-id="{{question.id}}" >
+                            <input type="text" data-id="{{question.id}}" class="question-title edit-on-click input-question" value="{{question.question}}">
+                            <select class="question-type-select input-question-type" data-id="{{question.id}}" data-origin_type = "{{question.question_type}}">
+                                <option value="short" {% if question.question_type == "short" %} selected {% endif %}>Short answer</option>
+                                <option value="paragraph" {% if question.question_type == "paragraph" %} selected {% endif %}>Paragraph</option>
+
+                                <option value="multiple choice" {% if question.question_type == "multiple choice" %} selected {% endif %}>Multiple choice</option>
+                                <option value="checkbox" {% if question.question_type == "checkbox" %} selected {% endif %}>Checkbox</option>
+                            </select>
+                            {% if question.question_type == "multiple choice" %}
+                            <div class="choices" data-id="{{question.id}}">
+                                {% for choice in question.choices.all %}
+                                    <div class="choice">
+                                        <input type="radio" id="{{choice.id}}" disabled>
+                                        <label for="{{choice.id}}">
+                                            <input type="text" value="{{choice.choice}}" class="edit-choice" data-id="{{choice.id}}">
+                                        </label>
+                                        <span class="remove-option" title = "Remove" data-id="{{choice.id}}">&times;</span>
+                                    </div>
+                                {% endfor %}
+                                <div class="choice">
+                                    <input type = "radio" id = "add-choice" disabled />
+                                    <label for = "add-choice" class="add-option" data-question="{{question.id}}" data-type = "{{question.question_type}}">Add option</label>
+                                </div>
+                            </div>
+                            {% elif question.question_type == "checkbox" %}
+                            <div class="choices" data-id="{{question.id}}">
+                                {% for choice in question.choices.all %}
+                                    <div class="choice">
+                                        <input type="checkbox" id="{{choice.id}}" disabled>
+                                        <label for="{{choice.id}}">
+                                            <input type="text" data-id="{{choice.id}}" class="edit-choice" value="{{choice.choice}}">
+                                        </label>
+                                        <span class="remove-option" title="Remove" data-id="{{choice.id}}">&times;</span>
+                                    </div>
+                                {% endfor %}
+                                <div class="choice">
+                                    <input type = "checkbox" id = "add-choice" disabled />
+                                    <label for = "add-choice" class="add-option" id="add-option" data-question="{{question.id}}" data-type = "{{question.question_type}}">Add option</label>
+                                </div>
+                            </div>
+                            {% elif question.question_type == "short" %}
+                            <div class="answers" data-id="{{question.id}}">
+                                <input type ="text" class="short-answer" disabled placeholder="Short answer text" />
+                            </div>
+                            {% elif question.question_type == "paragraph" %}
+                            <div class="answers" data-id="{{question.id}}">
+                                <textarea class="long-answer" disabled placeholder="Long answer text" ></textarea>
+                            </div>
+                            {% endif %}
+                            <div class="choice-option">
+                                <input type="checkbox" class="required-checkbox" id="required-{{question.id}}" data-id="{{question.id}}" {% if question.required %}checked{% endif %}>
+                                <label for="required-{{question.id}}" class="required">Required</label>
+                                <div class="float-right">
+                                    <img src="{% static 'stakeholders/Icon/dustbin.png' %}" alt="Delete question icon" class="question-option-icon delete-question" title="Delete question"
+                                    data-id="{{question.id}}" style="color: red;">
+                                </div>
+                            </div>
+                        </div>
+        {% endfor %}
+        </div>
+        
+                    </div>
+
+                <div class="question-options">
+                    <img src = "{% static 'stakeholders/Icon/add.png' %}" class="form-option-icon" title = "Add question" alt = "Add question icon" id="add-question" />
+                    <a href="{% url 'view_form' form.code %}">
+                        <img src = "{% static 'stakeholders/Icon/eye.png' %}" class = "form-option-icon" title = "Preview" alt = "Preview icon" />
+                    </a>
+                </div>
+    <div class="modal" id="setting">
+        <div class="modal-content txt-clr">
+            <form id="setting-form">
+                <span class="modal-close-btn" id="close-setting">&times;</span>
+                <h1 class = "modal-title">Setting</h1>
+                <h4 class="setting-preview-form small-screen"><a href="{% url 'view_form' form.code %}">Preview form here</a></h4>
+                <div class="modal-division">
+                    <div class="form-group">
+                        <h3 class="modal-subtitle">General</h3>
+                        <input type="checkbox" id="collect_email"{% if form.collect_email %} checked {% endif %}>
+                        <label for="collect_email" class="setting-form-label">Collect email address</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="checkbox" id="authenticated_responder" {% if form.authenticated_responder %} checked {% endif %}>
+                        <label for="authenticated_responder" class="setting-form-label">Respondent account must be authenticated. (Signed in required)</label>
+                    </div>
+                </div>
+                <div class="modal-division">
+                    <div class="form-group">
+                        <h3 class="modal-subtitle">Confirmation message:</h3>
+                        <textarea rows="1" class="confirmation-msg-input edit-on-click textarea-adjust" spellcheck="false"
+                         id="comfirmation_message">{{form.confirmation_message}}</textarea>
+                    </div>
+                </div>
+                <div class="modal-division">
+                    <div class="form-group">
+                        <h3 class="modal-subtitle">Respondents can:</h3>
+                        <input type="checkbox" id="edit_after_submit" {% if form.edit_after_submit %}checked{% endif %}>
+                        <label for="edit_after_submit" class="setting-form-label">Edit after submit</label>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Save" class="form-control btn btn-save-setting">
+                    </div>
+                </div>
+            </form>
+            <form id="delete-form" class="modal-division">
+                <fieldset class="form-group">
+                    <legend class="modal-subtitle text-danger danger-zone">Danger Zone</legend>
+                    <h3 class="delete-form-title">Delete this form</h3>
+                    <p class="delete-form-description">Once you delete a form, there is no going back. Please be certain.</p>
+                    <input type="submit" value="Delete" class="form-control delete-form-btn">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="send-form">
+        <div class="modal-content" style="position: relative;">
+            <div class="top" style="display: flex;justify-content: space-between;width:100%">
+                <h1 class = "modal-title" style="width: fit-content;">Send form</h1>
+                <span class="modal-close-btn" id="close-send-form" style="width: fit-content;">&times;</span>
+            </div>
+            <form method="POST" action="{% url 'send-form-link' %}"  >
+                {% csrf_token %}
+                 <div class="modal-division">
+                <h4 class="modal-subtitle">Email:</h4>
+                <input type="text" class="form-control" value="" name="email">
+                <h4 class="modal-subtitle">Link:</h4>
+                <input type="url" name="link" class="form-control" value="{{request.get_host}}/form/{{form.code}}/viewform">
+            </div>
+            <button class="btn btn-submit" type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    {% include "includes/footer.html" %}
+
+</div>
+
+{% endblock %}
+

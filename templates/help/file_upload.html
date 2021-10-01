@@ -1,0 +1,48 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+{% block title %} {% trans 'File Upload - NordESG' %} {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+
+<section class="content bg-white mt-4 mb-4 ml-1 mr-1">
+    <div class="row justify-content-center mt-4">
+        <div class="container mt-3 mb-3" style="cursor:pointer;height:100vh;overflow-x:hidden;">
+            <div class="col-md d-flex justify-content-center">
+                <div class="row" style="width:100%;">
+  
+                     <div class="container">
+                    <div class="text-center text-muted mb-4" style="font-size:0.6rem;">
+                        {% if messages  %}
+                         {% for message in messages %}
+                              <div class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+                                <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                 {{ message }}
+                              </div>
+                         {% endfor %}
+                        {% endif %}
+
+                    </div>
+                    <form enctype="multipart/form-data" action="{% url 'upload-document' %}" method="post">
+                    {% csrf_token %}
+                        {{doc_form.as_p}}
+                        <div class="form-group ml-3">
+                           <button type="submit" class="btn btn-primary mt-4">{% trans 'Upload' %}</button>
+                        </div>
+                    </div>
+                    </form>
+                     </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+    </section>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}

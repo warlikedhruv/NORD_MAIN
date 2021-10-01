@@ -1,0 +1,20 @@
+{% extends 'layouts/base-form.html' %}
+{% load static %}
+{% block script %}
+<script src="{% static 'stakeholders/index/viewform.js' %}" defer></script>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card m-4 p-2 shadow">
+        <span id="bg-color" style="display: none;">{{form.background_color}}</span>
+        <span id="text-color" style="display: none;">{{form.text_color}}</span>
+        <div class="margin-top-bottom box box-shadow bg-white">
+            <h1 class="form-title txtClr" style="text-align: center;">{{form.title}}</h1>
+            <p class="text-label margin-left-right" style="margin-left: 10px;text-align: center;">{{form.confirmation_message}}</p>
+            {% if form.edit_after_submit %}
+            <a href="{% url 'edit_response' form.code code %}" class="edit-response-link">Edit response</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

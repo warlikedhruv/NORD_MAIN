@@ -1,0 +1,55 @@
+{% extends 'layouts/base.html' %} {% load crispy_forms_tags %} {% load i18n %} {% block title %} {% trans 'Upload Questions' %} {% endblock %} {% block breadcrumb %} {% load i18n %}
+<!-- Breadcrumb-->
+<ol class="breadcrumb border-0 m-0">
+  <li class="breadcrumb-item active">{% trans 'Upload Questions' %}</li>
+  <!-- Breadcrumb Menu-->
+</ol>
+{% endblock %} {% block content %}
+
+<!-- Header -->
+
+<div class="container">
+  <div class="text-center text-muted mb-4">
+    {% if messages %} {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+      <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+      <a>{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% else %}{{ message.tags|title }}{% endif %}!</a> {{ message }}
+    </div>
+    {% endfor %} {% endif %}
+  </div>
+
+  <div class="container">
+    <h4>Guidelines to be followed Strictly</h4>
+    <ol>
+      <li>The File must be one with a .csv, .xlsx, .xlsm,.xlsb extension.</li>
+      <li>
+        The file must contain the following fields necessarily with the exact string match
+        <ol>
+        <li>language_code</li>
+          <li>framework</li>
+          <li>category</li>
+          <li>sub_category</li>
+          <li>industry</li>
+          <li>disclosure_number</li>
+          <li>question</li>
+          <li>description</li>
+          <li>units</li>
+        </ol>
+      </li>
+    </ol>
+    <h4>Sample Format</h4>
+    <div>
+        <img src="/static/assets/img/question_upload_template.png" alt="Question Template">
+    </div>
+  </div>
+  <br>
+  <div class="col-md-6">
+    <form method="post" enctype="multipart/form-data" action="{% url 'upload-question' %}">
+      {% csrf_token %}
+      <input type="file" name="file" />
+      <button type="submit" class="btn btn-primary">{% trans 'Upload Question(s)' %}</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

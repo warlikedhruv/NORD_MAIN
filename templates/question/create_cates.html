@@ -1,0 +1,119 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}
+{% trans 'Create Cates' %}
+{% endblock %}
+
+{% block breadcrumb %}
+
+{% load i18n %}
+<!-- Breadcrumb-->
+<ol class="breadcrumb border-0 m-0">
+<li class="breadcrumb-item active">{% trans 'Create Cates' %}</li>
+<!-- Breadcrumb Menu-->
+</ol>
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- Header -->
+    <div class="c-body row pb-8 pt-6 pt-md-6">
+        <main class="c-main col-md-6  offset-md-3">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <div class="card">
+
+                <div class="card-header">{% trans 'Create Category' %}</div>
+                <div class="card-body">
+                  <div class="bd-example">
+
+                    <div class="text-center text-muted mb-4">
+                        {% if messages  %}
+                         {% for message in messages %}
+                              <div class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+                                <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                <a>{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% else %}{{ message.tags|title }}{% endif %}!</a> {{ message }}
+                              </div>
+                         {% endfor %}
+                        {% endif %}
+
+                    </div>
+
+                    <form action="{% url 'create-cates' %}" method="post"></from>
+
+                      {% csrf_token %}
+                        <div class="row">
+                           <div  class="col-md-12">
+                                <div class="form-group mb-3">
+                                  <div class="input-group input-group-alternative text-dark">
+                                    {{ cates_form.name }}
+                                  </div>
+                                    {% if cates_form.name.errors %}
+                                       <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                           <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                           {{ cates_form.name.errors }}
+                                       </div>
+                                      {% endif %}
+                                </div>
+                           </div>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                  <div class="input-group input-group-alternative">
+                                    {{ cates_form.description }}
+                                  </div>
+                                    {% if cates_form.description.errors %}
+                                       <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                           <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                           {{ cates_form.description.errors }}
+                                       </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{% trans 'Choose Type' %}</label>
+                                  <div class="input-group input-group-alternative">
+                                    {{ cates_form.type }}
+                                  </div>
+                                    {% if cates_form.type.errors %}
+                                       <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                           <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                           {{ cates_form.type.errors }}
+                                       </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{% trans 'Choose Language' %}</label>
+                                  <div class="input-group input-group-alternative">
+                                    {{ cates_form.language }}
+                                  </div>
+                                    {% if cates_form.language.errors %}
+                                       <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                           <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                           {{ cates_form.language.errors }}
+                                       </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group ml-3">
+                               <button type="submit" class="btn btn-primary mt-4">{% trans 'Submit' %}</button>
+                            </div>
+                        </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </main>
+
+      </div>
+
+{% endblock %}

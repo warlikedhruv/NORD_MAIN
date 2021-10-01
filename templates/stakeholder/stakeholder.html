@@ -1,0 +1,119 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+{% block title %} {% trans 'Stakeholders - NordESG' %} {% endblock title %}
+{% load static %}
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'stakeholders/index/new_style.css' %}">
+{% endblock stylesheets %}
+
+{% block javascripts %}
+
+<script src = "{% static 'stakeholders/index/index.js' %}" defer></script>
+<script src="{% static 'stakeholders/lib/cookie.min.js' %}" defer></script>
+{% endblock javascripts %}
+
+
+{% block content %}
+
+
+
+<div class="container-fluid pt-5">
+    <div class="row">
+        <div class="col-xl-12 order-xl-1">
+            <div class="card bg-secondary shadow">
+                <div class="card-header bg-white border-0">
+                  <div class="row align-items-center">
+                    <div class="col-8">
+                      <h3 class="mb-0">{% trans 'StakeHolders Form' %}</h3>
+                    </div>
+                  </div>
+                </div>
+            <div class="card-body" >
+
+                <div class="row" style="display:flex;row-gap: 2rem; flex-wrap: nowrap; overflow-x: auto;">
+                    <div class="col-md-3">
+
+                        <div class="form-template-box vertical-align">
+
+                            <img src = "{% static 'stakeholders/Icon/blank-form.png' %}" alt = "Blank form" title = "Blank form" id="create-blank-form">
+                              <span class="">Blank Form</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+
+                        <div class="form-template-box vertical-align">
+                            <img src = "{% static 'stakeholders/contact_information.png' %}" alt = "Contact Information" title = "Contact Information" id="create-contact-form">
+                            <span class="">Contact Information</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-template-box vertical-align">
+                            <img src = "{% static 'stakeholders/customer_feedback.png' %}" alt = "Customer Feedback" title = "Customer Feedback" id="create-customer-feedback">
+                        <span class="">Customer Feedback</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-template-box vertical-align">
+                            <img src = "{% static 'stakeholders/customer_feedback.png' %}" alt = "Event Registration" title = "Event Registration" id="create-event-registration">
+                <span class="">Event Registration</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-template-box vertical-align">
+                            <img src = "{% static 'stakeholders/customer_feedback.png' %}" alt = "Event Registration" title = "Event Registration" id="create-event-registration">
+                <span class="">Event Registration</span>
+                        </div>
+                    </div>
+              </div>
+
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid pt-3">
+    <div class="row">
+        <div class="form-list card p-3 col-xl-12">
+            <h3 class="forms-label mb-3">Your forms:</h3>
+
+            <div class="table-responsive">
+          <table class="table table-bordered align-items-center">
+            <thead class="thead-light text-dark">
+              <tr>
+                <th scope="col">{% trans 'Title' %}</th>
+                <th scope="col">{% trans 'Created At' %}</th>
+                <th scope="col">{% trans 'code' %}</th>
+                <th scope="col">{% trans 'edit' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in forms %}
+              <tr style="font-size: 12.5px">
+                <td class="text-dark"><strong>{{i.title}}</strong></td>
+                <td class="text-dark">{{i.createdAt}}</td>
+                <td class="text-dark">
+                        {{i.code }}
+                </td>
+                  <td><a href = "{% url 'edit_form' i.code %}" class="form-list-link">Edit</a>  </td>
+              </tr>
+            {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+
+
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+
