@@ -1,0 +1,738 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-09-16 23:20+0530\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\documents\views.py:53
+msgid "Document deleted successfully."
+msgstr ""
+
+#: .\documents\views.py:57
+msgid "Only Admin can delete the file."
+msgstr ""
+
+#: .\documents\views.py:60 .\documents\views.py:81 .\documents\views.py:119
+#: .\organisations\views.py:37 .\questions\views.py:135 .\users\views.py:335
+msgid "Some error occurred!. Please try again."
+msgstr ""
+
+#: .\documents\views.py:74
+msgid "Access changed successfully."
+msgstr ""
+
+#: .\documents\views.py:78
+msgid "Only Admin can change access the file."
+msgstr ""
+
+#: .\documents\views.py:112
+msgid "Access Revoked successfully."
+msgstr ""
+
+#: .\documents\views.py:116
+msgid "Only Admin can delete the Access."
+msgstr ""
+
+#: .\nord_esg\settings.py:55
+msgid "English"
+msgstr ""
+
+#: .\nord_esg\settings.py:56
+msgid "German"
+msgstr ""
+
+#: .\organisations\forms.py:47
+msgid "The domain name already exists."
+msgstr ""
+
+#: .\organisations\views.py:34 .\questions\views.py:132 .\users\views.py:332
+msgid "Record deleted successfully."
+msgstr ""
+
+#: .\organisations\views.py:53 .\questions\views.py:111 .\users\views.py:314
+msgid "Record has been updated successfully!"
+msgstr ""
+
+#: .\organisations\views.py:62 .\questions\views.py:115 .\users\views.py:322
+msgid "No record found!"
+msgstr ""
+
+#: .\questions\forms.py:55
+msgid "The question already exists."
+msgstr ""
+
+#: .\templates\help\file_upload.html:3
+msgid "File Upload - NordESG"
+msgstr ""
+
+#: .\templates\help\file_upload.html:34
+msgid "Upload"
+msgstr ""
+
+#: .\templates\help\help.html:1 .\templates\help\provide_doc_access.html:1
+msgid "Help - NordESG"
+msgstr ""
+
+#: .\templates\help\provide_doc_access.html:41
+msgid "Grant Access"
+msgstr ""
+
+#: .\templates\includes\navigation-fullscreen.html:28
+#: .\templates\includes\navigation.html:14
+#: .\templates\users\users_detail.html:74
+msgid "Language"
+msgstr ""
+
+#: .\templates\includes\navigation-fullscreen.html:51
+msgid "Contact Us"
+msgstr ""
+
+#: .\templates\includes\navigation.html:55 .\templates\includes\sidenav.html:33
+msgid "Welcome!"
+msgstr ""
+
+#: .\templates\includes\navigation.html:59 .\templates\includes\sidenav.html:37
+msgid "My profile"
+msgstr ""
+
+#: .\templates\includes\navigation.html:64 .\templates\includes\sidenav.html:42
+#: .\templates\includes\sidenav.html:99 .\templates\includes\sidenav.html:139
+#: .\templates\includes\sidenav.html:184
+msgid "Logout"
+msgstr "Ausloggen"
+
+#: .\templates\includes\sidenav.html:69 .\templates\includes\sidenav.html:109
+#: .\templates\includes\sidenav.html:144
+msgid "Dashboard"
+msgstr "Armaturenbrett"
+
+#: .\templates\includes\sidenav.html:74 .\templates\includes\sidenav.html:114
+#: .\templates\users\admin_dashboard.html:38
+msgid "Organizations"
+msgstr "Organisationen"
+
+#: .\templates\includes\sidenav.html:79 .\templates\includes\sidenav.html:119
+#: .\templates\users\admin_dashboard.html:21
+msgid "Users"
+msgstr "Benutzer"
+
+#: .\templates\includes\sidenav.html:84 .\templates\includes\sidenav.html:124
+#: .\templates\users\admin_dashboard.html:72
+msgid "Questions"
+msgstr "Fragen"
+
+#: .\templates\includes\sidenav.html:89 .\templates\includes\sidenav.html:129
+msgid "StakeHolders"
+msgstr "Stakeholder"
+
+#: .\templates\includes\sidenav.html:94 .\templates\includes\sidenav.html:134
+#: .\templates\includes\sidenav.html:179
+msgid "Help"
+msgstr "Hilfe"
+
+#: .\templates\includes\sidenav.html:104
+msgid "SuperUser"
+msgstr "SuperUser"
+
+#: .\templates\includes\sidenav.html:149 .\templates\users\status.html:48
+msgid "Data Status"
+msgstr "Datenstatus"
+
+#: .\templates\includes\sidenav.html:154
+msgid "Add Data"
+msgstr "Daten hinzufügen"
+
+#: .\templates\includes\sidenav.html:159
+msgid "Review Data"
+msgstr "Daten überprüfen"
+
+#: .\templates\includes\sidenav.html:164
+msgid "Goals and KPI"
+msgstr "Ziele und KPI"
+
+#: .\templates\includes\sidenav.html:169
+msgid "Report"
+msgstr "Prüfbericht"
+
+#: .\templates\includes\sidenav.html:174
+msgid "TODOS"
+msgstr "TODOS"
+
+#: .\templates\includes\sidenav.html:190
+msgid "You don’t have permission to view or edit anything."
+msgstr "Sie sind nicht berechtigt, etwas anzuzeigen oder zu bearbeiten."
+
+#: .\templates\layouts\base-fullscreen.html:11 .\templates\layouts\base.html:29
+msgid "NordESG"
+msgstr ""
+
+#: .\templates\organisation\create_org.html:6
+#: .\templates\organisation\create_org.html:14
+#: .\templates\organisation\create_org.html:30
+msgid "Create Organization"
+msgstr ""
+
+#: .\templates\organisation\create_org.html:118
+#: .\templates\organisation\edit_org.html:52
+#: .\templates\question\create_cates.html:105
+#: .\templates\question\create_question.html:133
+#: .\templates\question\edit_question.html:53
+#: .\templates\users\add_data.html:100 .\templates\users\create_user.html:141
+#: .\templates\users\edit_user.html:62
+#: .\templates\users\missing_question.html:82
+#: .\templates\users\password_reset.html:33
+#: .\templates\users\password_set_confirm.html:18
+#: .\templates\users\profile_update.html:109
+msgid "Submit"
+msgstr ""
+
+#: .\templates\organisation\edit_org.html:6
+#: .\templates\organisation\edit_org.html:14
+msgid "Update Organization"
+msgstr ""
+
+#: .\templates\organisation\edit_org.html:32
+msgid "Edit Organization"
+msgstr ""
+
+#: .\templates\organisation\organization.html:4
+msgid "Organizations - NordESG"
+msgstr ""
+
+#: .\templates\organisation\organization.html:54
+msgid "Add Organization"
+msgstr ""
+
+#: .\templates\organisation\organization.html:59
+msgid "Logo"
+msgstr ""
+
+#: .\templates\organisation\organization.html:60
+msgid "Org. Name"
+msgstr ""
+
+#: .\templates\organisation\organization.html:61
+msgid "Org. Url"
+msgstr ""
+
+#: .\templates\organisation\organization.html:62
+msgid "Org. Size"
+msgstr ""
+
+#: .\templates\organisation\organization.html:63
+#: .\templates\users\profile.html:98 .\templates\users\profile_update.html:73
+msgid "Address"
+msgstr ""
+
+#: .\templates\organisation\organization.html:64
+#: .\templates\question\question.html:61 .\templates\users\users_detail.html:75
+msgid "Delete"
+msgstr ""
+
+#: .\templates\organisation\organization.html:65
+#: .\templates\question\question.html:62 .\templates\users\users_detail.html:76
+msgid "Edit"
+msgstr ""
+
+#: .\templates\question\create_cates.html:6
+#: .\templates\question\create_cates.html:14
+msgid "Create Cates"
+msgstr ""
+
+#: .\templates\question\create_cates.html:30
+msgid "Create Category"
+msgstr ""
+
+#: .\templates\question\create_cates.html:78
+msgid "Choose Type"
+msgstr ""
+
+#: .\templates\question\create_cates.html:92
+msgid "Choose Language"
+msgstr ""
+
+#: .\templates\question\create_question.html:6
+#: .\templates\question\create_question.html:14
+#: .\templates\question\create_question.html:30
+msgid "Create Question"
+msgstr ""
+
+#: .\templates\question\create_question.html:51
+msgid "Choose Framework"
+msgstr ""
+
+#: .\templates\question\create_question.html:65
+msgid "Choose category"
+msgstr ""
+
+#: .\templates\question\create_question.html:79
+msgid "Choose sub category"
+msgstr ""
+
+#: .\templates\question\edit_question.html:6
+#: .\templates\question\edit_question.html:14
+msgid "Update Question"
+msgstr ""
+
+#: .\templates\question\edit_question.html:32
+msgid "Edit Question"
+msgstr ""
+
+#: .\templates\question\question.html:1
+msgid "Questions - NordESG"
+msgstr ""
+
+#: .\templates\question\question.html:46
+#: .\templates\question\upload_questions.html:48
+msgid "Upload Question(s)"
+msgstr ""
+
+#: .\templates\question\question.html:47
+msgid "Create Cate(s)"
+msgstr ""
+
+#: .\templates\question\question.html:48
+msgid "Add Question"
+msgstr ""
+
+#: .\templates\question\question.html:55
+msgid "Framework"
+msgstr ""
+
+#: .\templates\question\question.html:56
+msgid "Category"
+msgstr ""
+
+#: .\templates\question\question.html:57
+msgid "Sub Category"
+msgstr ""
+
+#: .\templates\question\question.html:58 .\templates\users\todos.html:56
+msgid "Question"
+msgstr ""
+
+#: .\templates\question\question.html:59 .\templates\users\add_data.html:56
+#: .\templates\users\missing_question.html:38 .\templates\users\status.html:56
+#: .\templates\users\todos.html:57
+msgid "Description"
+msgstr ""
+
+#: .\templates\question\question.html:60 .\templates\users\add_data.html:71
+#: .\templates\users\missing_question.html:53 .\templates\users\status.html:58
+msgid "Unit"
+msgstr ""
+
+#: .\templates\question\upload_questions.html:1
+#: .\templates\question\upload_questions.html:4
+msgid "Upload Questions"
+msgstr ""
+
+#: .\templates\stakeholder\stakeholder.html:3
+msgid "Stakeholders - NordESG"
+msgstr ""
+
+#: .\templates\users\add_data.html:1 .\templates\users\missing_question.html:1
+msgid "Add Data - NordESG"
+msgstr ""
+
+#: .\templates\users\add_data.html:17 .\templates\users\review_data.html:18
+#: .\templates\users\status.html:18 .\templates\users\todos.html:21
+msgid "Get Data"
+msgstr ""
+
+#: .\templates\users\add_data.html:65
+#: .\templates\users\missing_question.html:47
+msgid "Code"
+msgstr ""
+
+#: .\templates\users\add_data.html:79
+#: .\templates\users\missing_question.html:61
+msgid "Answer"
+msgstr ""
+
+#: .\templates\users\add_data.html:85
+#: .\templates\users\missing_question.html:67 .\templates\users\status.html:59
+msgid "Comments"
+msgstr ""
+
+#: .\templates\users\add_data.html:95
+#: .\templates\users\missing_question.html:77
+msgid "Not Applicable"
+msgstr ""
+
+#: .\templates\users\admin_dashboard.html:3
+msgid "Admin-Dashboard - NordESG"
+msgstr ""
+
+#: .\templates\users\admin_dashboard.html:55
+msgid "Frameworks"
+msgstr ""
+
+#: .\templates\users\create_user.html:6 .\templates\users\create_user.html:14
+#: .\templates\users\create_user.html:40
+msgid "Create User"
+msgstr ""
+
+#: .\templates\users\dashboard.html:1
+msgid "Dashboard - NordESG"
+msgstr ""
+
+#: .\templates\users\dashboard.html:14
+msgid "Framework Progress"
+msgstr "Rahmenfortschritt"
+
+#: .\templates\users\dashboard.html:20 .\templates\users\dashboard.html:86
+msgid "Name"
+msgstr ""
+
+#: .\templates\users\dashboard.html:21 .\templates\users\dashboard.html:87
+#: .\templates\users\status.html:54
+msgid "Status"
+msgstr ""
+
+#: .\templates\users\dashboard.html:22 .\templates\users\dashboard.html:88
+msgid "Progress"
+msgstr ""
+
+#: .\templates\users\dashboard.html:61
+msgid "Show Progress"
+msgstr ""
+
+#: .\templates\users\dashboard.html:80
+msgid "Category Progress"
+msgstr ""
+
+#: .\templates\users\dashboard.html:115
+msgid "Colleagues"
+msgstr ""
+
+#: .\templates\users\dashboard.html:121 .\templates\users\profile.html:54
+#: .\templates\users\profile_update.html:36
+#: .\templates\users\users_detail.html:70
+msgid "First Name"
+msgstr ""
+
+#: .\templates\users\dashboard.html:122 .\templates\users\users_detail.html:69
+msgid "Email"
+msgstr ""
+
+#: .\templates\users\display_data.html:1
+msgid "Data - NordESG"
+msgstr ""
+
+#: .\templates\users\edit_user.html:6 .\templates\users\edit_user.html:14
+msgid "Update User"
+msgstr ""
+
+#: .\templates\users\edit_user.html:42
+msgid "Edit User"
+msgstr ""
+
+#: .\templates\users\goals_kpi.html:3
+msgid "Goals and KPI - NordESG"
+msgstr ""
+
+#: .\templates\users\login.html:3
+msgid "Login"
+msgstr "Anmeldung"
+
+#: .\templates\users\login.html:32
+msgid "Enter Your Login Credentials"
+msgstr "Geben Sie Ihre Anmeldedaten ein"
+
+#: .\templates\users\login.html:72
+msgid "Remember me"
+msgstr "Erinnere dich an mich"
+
+#: .\templates\users\login.html:73
+msgid "Forgot Password?"
+msgstr "Passwort vergessen?"
+
+#: .\templates\users\login.html:77
+msgid "Sign in"
+msgstr "Einloggen"
+
+#: .\templates\users\page-403.html:3
+msgid "Error 403"
+msgstr ""
+
+#: .\templates\users\page-403.html:18
+msgid "Oups! Error 403"
+msgstr ""
+
+#: .\templates\users\page-403.html:22
+msgid "Access denied - Contact support"
+msgstr ""
+
+#: .\templates\users\page-403.html:22
+msgid "AUTHENTICATE"
+msgstr ""
+
+#: .\templates\users\page-403.html:29
+msgid "LOGIN"
+msgstr ""
+
+#: .\templates\users\page-404.html:4 .\templates\users\page-500.html:4
+msgid "Error 404"
+msgstr ""
+
+#: .\templates\users\page-404.html:19
+msgid " Oups! Error 404"
+msgstr ""
+
+#: .\templates\users\page-404.html:23 .\templates\users\page-404.html:27
+msgid "Page not found"
+msgstr ""
+
+#: .\templates\users\page-404.html:23 .\templates\users\page-404.html:27
+#: .\templates\users\page-404.html:34 .\templates\users\page-404.html:38
+#: .\templates\users\page-404.html:42 .\templates\users\page-500.html:24
+#: .\templates\users\page-500.html:28 .\templates\users\page-500.html:36
+#: .\templates\users\page-500.html:40
+msgid "Home"
+msgstr ""
+
+#: .\templates\users\page-500.html:19
+msgid "Oups! Error 500"
+msgstr ""
+
+#: .\templates\users\password_reset.html:12
+msgid "Forgot password"
+msgstr ""
+
+#: .\templates\users\password_reset_done.html:11
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered."
+msgstr ""
+
+#: .\templates\users\password_reset_done.html:12
+msgid "You should receive them shortly."
+msgstr ""
+
+#: .\templates\users\password_reset_done.html:15
+msgid ""
+"If you dont receive an email, please make sure you've entered the address "
+"you registered with,"
+msgstr ""
+
+#: .\templates\users\password_reset_done.html:16
+msgid "and check your spam folder."
+msgstr ""
+
+#: .\templates\users\password_reset_email.html:4
+#: .\templates\users\profile.html:17
+msgid "Hello"
+msgstr ""
+
+#: .\templates\users\password_reset_email.html:5
+msgid "To initiate the password reset process for your  Account,"
+msgstr ""
+
+#: .\templates\users\password_reset_email.html:6
+msgid "click the link below:"
+msgstr ""
+
+#: .\templates\users\password_reset_email.html:10
+msgid ""
+"If clicking the link above doesn't work, please copy and paste the URL in a "
+"new browser window instead."
+msgstr ""
+
+#: .\templates\users\password_reset_email.html:12
+msgid "Sincerely,"
+msgstr ""
+
+#: .\templates\users\password_reset_email.html:13
+msgid "The NordESG Team"
+msgstr ""
+
+#: .\templates\users\password_set_complete.html:10
+msgid "Your password has been set successfully."
+msgstr ""
+
+#: .\templates\users\password_set_complete.html:11
+msgid "Log in here"
+msgstr ""
+
+#: .\templates\users\password_set_confirm.html:14
+msgid "Manage password"
+msgstr ""
+
+#: .\templates\users\password_set_confirm.html:22
+msgid ""
+"This link was invalid, possibly because it has already been used or expired"
+msgstr ""
+
+#: .\templates\users\password_set_confirm.html:23
+msgid "Please make a new request"
+msgstr ""
+
+#: .\templates\users\profile.html:4 .\templates\users\profile_update.html:3
+msgid "Profile"
+msgstr ""
+
+#: .\templates\users\profile.html:18
+msgid ""
+"This is your profile page. Feel free to make changes to your profile. Note "
+"your email and organization can not be changed. Contact Admin if you want to "
+"change your email and organization."
+msgstr ""
+
+#: .\templates\users\profile.html:19
+msgid "Edit profile"
+msgstr ""
+
+#: .\templates\users\profile.html:43 .\templates\users\profile_update.html:24
+msgid "My account"
+msgstr ""
+
+#: .\templates\users\profile.html:49
+msgid "User information"
+msgstr ""
+
+#: .\templates\users\profile.html:62 .\templates\users\profile_update.html:43
+msgid "Last name"
+msgstr ""
+
+#: .\templates\users\profile.html:72
+msgid "Email address"
+msgstr ""
+
+#: .\templates\users\profile.html:79 .\templates\users\users_detail.html:72
+msgid "Organization"
+msgstr ""
+
+#: .\templates\users\profile.html:85 .\templates\users\profile_update.html:60
+msgid "Industry"
+msgstr ""
+
+#: .\templates\users\profile.html:93 .\templates\users\profile_update.html:68
+msgid "Contact information"
+msgstr ""
+
+#: .\templates\users\profile.html:106 .\templates\users\profile_update.html:81
+msgid "City"
+msgstr ""
+
+#: .\templates\users\profile.html:112 .\templates\users\profile_update.html:87
+msgid "Country"
+msgstr ""
+
+#: .\templates\users\profile.html:118 .\templates\users\profile_update.html:93
+msgid "Postal code"
+msgstr ""
+
+#: .\templates\users\profile.html:126 .\templates\users\profile_update.html:101
+msgid "About me"
+msgstr ""
+
+#: .\templates\users\profile.html:129 .\templates\users\profile_update.html:104
+msgid "About Me"
+msgstr ""
+
+#: .\templates\users\profile_update.html:11
+msgid "Manage Organizations"
+msgstr ""
+
+#: .\templates\users\profile_update.html:31
+msgid "Profile Update"
+msgstr ""
+
+#: .\templates\users\profile_update.html:52
+msgid "Photo"
+msgstr ""
+
+#: .\templates\users\report.html:3
+msgid "Report - NordESG"
+msgstr ""
+
+#: .\templates\users\review_data.html:1
+msgid "Review Data - NordESG"
+msgstr ""
+
+#: .\templates\users\status.html:55
+msgid "DataPoint"
+msgstr ""
+
+#: .\templates\users\status.html:57
+msgid "Value"
+msgstr ""
+
+#: .\templates\users\todos.html:3
+msgid "Todos - NordESG"
+msgstr ""
+
+#: .\templates\users\todos.html:49
+msgid "TODO"
+msgstr ""
+
+#: .\templates\users\todos.html:55
+msgid "status"
+msgstr ""
+
+#: .\templates\users\todos.html:58
+msgid "Mark As Optional"
+msgstr ""
+
+#: .\templates\users\todos.html:59
+msgid "Attempt"
+msgstr ""
+
+#: .\templates\users\users_detail.html:4
+msgid "Users - NordESG"
+msgstr ""
+
+#: .\templates\users\users_detail.html:25
+msgid "Manage Users"
+msgstr ""
+
+#: .\templates\users\users_detail.html:64
+msgid "Add User"
+msgstr ""
+
+#: .\templates\users\users_detail.html:71
+msgid "Last Name"
+msgstr ""
+
+#: .\templates\users\users_detail.html:73
+msgid "User Type"
+msgstr ""
+
+#: .\users\admin.py:26
+msgid "personal Info"
+msgstr ""
+
+#: .\users\admin.py:38
+msgid "Permissions"
+msgstr ""
+
+#: .\users\admin.py:49
+msgid "Important Dates"
+msgstr ""
+
+#: .\users\forms.py:51
+msgid "The username does not exist."
+msgstr ""
+
+#: .\users\forms.py:69
+msgid "The email does not exist."
+msgstr ""
+
+#: .\users\forms.py:110
+msgid "The email is already in use."
+msgstr ""

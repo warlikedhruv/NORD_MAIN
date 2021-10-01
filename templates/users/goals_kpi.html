@@ -1,0 +1,298 @@
+{% extends 'layouts/base.html' %} {% load i18n %} {% block title %} {% trans
+'Review Data - NordESG' %} {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<!-- Header -->
+<div class="card bg-secondary shadow m-3">
+  <div class="card-header bg-white border-0">
+    <h3
+      style="text-align: center; font-family: 'Barlow', sans-serif !important"
+    >
+      Filter Questions
+    </h3>
+    <hr />
+    <!-- loading spinner -->
+    <div class="wrapper"></div>
+    <div class="spanner">
+      <div class="loader"></div>
+      <p>Fetching data...</p>
+    </div>
+    <!-- ------------ -->
+    <form
+      method="post"
+      enctype="multipart/form-data"
+      action="{% url 'goals-kpi' %}"
+      style="display: flex; justify-content: center"
+    >
+      {% csrf_token %}
+      <div style="display: inline-block; margin-right: 10px">
+        <div
+          class="form-group"
+          style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem"
+        >
+          {% for field in form.visible_fields %}
+          <div
+            class="field-control"
+            style="display: inline-block; margin-right: 10px; float: left"
+          >
+            {{ field }}
+          </div>
+          {% endfor %}
+          <div
+            class="field-control"
+            style="display: inline-block; margin-right: 10px; float: left"
+          >
+            <button
+              id="question_filter_button"
+              type="submit"
+              name="question-filter"
+              class="btn btn-primary mt-0"
+              style="width: 100%"
+            >
+              {% trans 'Get Data' %}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="text-center text-muted mb-4" style="font-size: 0.6rem">
+  {% if messages %} {% for message in messages %}
+  <div
+    class="alert alert-{{ message.tags }} alert-dismissible text-center"
+    role="alert"
+  >
+    <span type="button" class="close" data-dismiss="alert" aria-label="Close"
+      ><span aria-hidden="true">&times;</span></span
+    >
+    <a
+      >{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% else %}{% endif %}</a
+    >
+    {{ message }}
+  </div>
+  {% endfor %} {% endif %}
+</div>
+
+<div class="accordion" id="accordionExample">
+  {% for question in questions %}
+
+  <div class="card m-3">
+    <div class="card-header" id="heading{{question.question.id}}">
+      <h5 class="mb-0">
+        <button
+          class="btn btn-hover-text-white btn-link collapsed"
+          type="button"
+          data-toggle="collapse"
+          data-target="#collapse{{question.question.id}}"
+          aria-expanded="false"
+          aria-controls="collapse{{question.question.id}}"
+        >
+          <span style="color: black">{{ question.year }}</span> -
+          {{question.question.question}} {% if question.value == None%}
+          <span class="badge badge-danger">Not Attempted</span>
+          {% else %}
+          <span class="badge badge-success">Attempted</span>
+          {% endif %}
+        </button>
+        <a class="btn btn-danger" id="delete-btn" href="{% url 'remove-goal' goal_id=question.id %}" >
+          Delete
+        </a>
+      </h5>
+    </div>
+    <div
+      id="collapse{{question.question.id}}"
+      class="collapse"
+      aria-labelledby="heading{{question.question.id}}"
+      data-parent="#accordionExample"
+    >
+      <div class="card-body">
+        <form
+          name="answersForm"
+          enctype="multipart/form-data"
+          action="{% url 'save-answer-goal' question.question.id %}"
+          method="POST"
+        >
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <strong>{% trans 'Description' %}</strong>
+                <pre style="white-space: normal;">{{question.question.description}}</pre>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <strong>{% trans 'Code' %}</strong>
+                <p>{{question.question.code}}</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <strong>{% trans 'Unit' %}</strong>
+                <p>{{question.question.unit}}</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <strong>{% trans 'Year' %}</strong>
+                <br>
+                <input name="question-year" value="{{question.year}}"></input>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <strong class="form-control-label">{% trans 'Answer' %}</strong>
+                <textarea name="value" class="form-control" cols="30" rows="10">
+{{question.goal_answer|default_if_none:""}}</textarea
+                >
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <strong class="form-control-label"
+                  >{% trans 'Comments' %}</strong
+                >
+                <textarea
+                  name="comment"
+                  class="form-control"
+                  cols="30"
+                  rows="10"
+                >
+{{question.goal_comment|default_if_none:""}}</textarea
+                >
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-md-4">
+              <div class="">
+                <button type="submit" class="btn btn-primary mt-4">
+                  {% trans 'Submit' %}
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
+
+<script>
+  $(document).ready(function () {
+    $("#id_framework").change(function () {
+      var optionSelected = $(this).find("option:selected");
+      var valueSelected = optionSelected.val();
+      var name = optionSelected.text();
+      data = { name: name, id_value: valueSelected };
+      console.log(data);
+      $("div.spanner").toggleClass("show");
+
+      $.ajax({
+        type: "get",
+        url: "/getcategories",
+        data: data,
+        success: function (result) {
+          $("#id_category option").remove();
+          for (var i = result.length - 1; i >= 0; i--) {
+            $("#id_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+          }
+          $("div.spanner").toggleClass("show");
+          $("#id_category").removeAttr("disabled");
+        },
+      });
+    });
+  });
+
+  $(document).ready(function () {
+    $("#id_category").change(function () {
+      var optionSelected = $(this).find("option:selected");
+      var FrameworkSelected = $("#id_framework").find("option:selected");
+      var valueSelected = optionSelected.val();
+      var name = optionSelected.text();
+      data = { framework:FrameworkSelected.val(),name: name, id_value: valueSelected };
+      console.log(data);
+      $("div.spanner").toggleClass("show");
+
+      $.ajax({
+        type: "get",
+        url: "/getsubcategories",
+        data: data,
+        success: function (result) {
+          $("#id_sub_category option").remove();
+          for (var i = result.length - 1; i >= 0; i--) {
+            $("#id_sub_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+          }
+          $("div.spanner").toggleClass("show");
+          $("#id_sub_category").removeAttr("disabled");
+        },
+      });
+    });
+  });
+
+  $(document).ready(() => {
+    var optionSelected = $("#id_category").find("option:selected");
+    var FrameworkSelected = $("#id_framework").find("option:selected");
+    var valueSelected = optionSelected.val();
+    var name = optionSelected.text();
+    if (valueSelected) {
+      data = { name: name, id_value: valueSelected,framework:FrameworkSelected.val()};
+      $("div.spanner").toggleClass("show");
+
+      $.ajax({
+        type: "get",
+        url: "/getsubcategories",
+        data: data,
+        success: function (result) {
+          $("#id_sub_category option").remove();
+          for (var i = result.length - 1; i >= 0; i--) {
+            $("#id_sub_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+          }
+          $("div.spanner").toggleClass("show");
+          $("#id_sub_category").removeAttr("disabled");
+        },
+      });
+    } else {
+      $("#id_sub_category").attr("disabled", "disabled");
+    }
+    // -----
+    var optionSelected = $("#id_framework").find("option:selected");
+    console.log(optionSelected);
+    var valueSelected = optionSelected.val();
+    var name = optionSelected.text();
+    if (valueSelected) {
+      data = { name: name, id_value: valueSelected };
+      $.ajax({
+        type: "get",
+        url: "/getcategories",
+        data: data,
+        success: function (result) {
+          $("#id_category option").remove();
+          for (var i = result.length - 1; i >= 0; i--) {
+            $("#id_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
+          }
+          // $("div.spanner").toggleClass("show");
+          $("#id_category").removeAttr("disabled");
+        },
+      });
+    } else {
+      $("#id_category").attr("disabled", "disabled");
+    }
+  });
+</script>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

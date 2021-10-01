@@ -1,0 +1,179 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}
+{% trans 'Create Question' %}
+{% endblock %}
+
+{% block breadcrumb %}
+
+{% load i18n %}
+<!-- Breadcrumb-->
+<ol class="breadcrumb border-0 m-0">
+<li class="breadcrumb-item active">{% trans 'Create Question' %}</li>
+<!-- Breadcrumb Menu-->
+</ol>
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- Header -->
+    <div class="c-body row pb-8 pt-6 pt-md-6">
+        <main class="c-main col-md-6  offset-md-3">
+          <div class="container-fluid">
+            <div class="fade-in">
+              <div class="card">
+
+                <div class="card-header">{% trans 'Create Question' %}</div>
+                <div class="card-body">
+                  <div class="bd-example">
+
+                    <div class="text-center text-muted mb-4" style="font-size:0.6rem;">
+                        {% if messages  %}
+                         {% for message in messages %}
+                              <div class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+                                <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                <a>{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% else %}{{ message.tags|title }}{% endif %}!</a> {{ message }}
+                              </div>
+                         {% endfor %}
+                        {% endif %}
+
+                    </div>
+
+                    <form enctype="multipart/form-data" action="{% url 'create-question' %}" method="post"></from>
+
+                         <div class="row">
+                             {% csrf_token %}
+                                <div class="col-md-12">
+                                    <label>{% trans 'Choose Framework' %}</label>
+                                      <div class="form-group">
+                                        <a id="framework" class="input-group input-group-alternative">{{ q_form.framework }}</a>
+                                      </div>
+                                      {% if q_form.framework.errors %}
+                                        <div>
+                                          <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                              <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                              {{ q_form.framework.errors }}
+                                          </div>
+                                        </div>
+                                      {% endif %}
+                                </div>
+                                <div class="col-md-12">
+                                      <label>{% trans 'Choose category' %}</label>
+                                      <div class="form-group">
+                                        <a id="category" class="input-group input-group-alternative">{{ q_form.category }}</a>
+                                      </div>
+                                      {% if q_form.category.errors %}
+                                        <div>
+                                          <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                              <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                              {{ q_form.category.errors }}
+                                          </div>
+                                        </div>
+                                      {% endif %}
+                                </div>
+                                <div class="col-md-12">
+                                      <label>{% trans 'Choose sub category' %}</label>
+                                      <div class="form-group">
+                                        <a id="sub_category" class="input-group input-group-alternative">{{ q_form.sub_category }}</a>
+                                      </div>
+                                      {% if q_form.sub_category.errors %}
+                                        <div>
+                                          <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                              <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                              {{ q_form.sub_category.errors }}
+                                          </div>
+                                        </div>
+                                      {% endif %}
+                                </div>
+                    
+                                <!-- Language -->
+                                <div class="col-md-12">
+                                      <label>{% trans 'Choose language' %}</label>
+                                      <div class="form-group">
+                                        <a id="language" class="input-group input-group-alternative">{{ q_form.language }}</a>
+                                      </div>
+                                      {% if q_form.language.errors %}
+                                        <div>
+                                          <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                              <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                              {{ q_form.language.errors }}
+                                          </div>
+                                        </div>
+                                      {% endif %}
+                                </div>
+
+                                <!-- Industry -->
+                                <div class="col-md-12">
+                                      <label>{% trans 'Choose Industry' %}</label>
+                                      <div class="form-group">
+                                        <a id="industry" class="input-group input-group-alternative">{{ q_form.industry }}</a>
+                                      </div>
+                                      {% if q_form.industry.errors %}
+                                        <div>
+                                          <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                              <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                              {{ q_form.industry.errors }}
+                                          </div>
+                                        </div>
+                                      {% endif %}
+                                </div>
+
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <a id="unit" class="input-group input-group-alternative">{{ q_form.unit }}</a>
+                                      </div>
+                                      {% if q_form.unit.errors %}
+                                        <div>
+                                          <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                              <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                              {{ q_form.unit.errors }}
+                                          </div>
+                                        </div>
+                                      {% endif %}
+                                </div>
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <a id="question" class="input-group input-group-alternative" spellcheck="true">{{ q_form.question }}</a>
+                                      </div>
+                                      {% if q_form.question.errors %}
+                                        <div>
+                                          <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                              <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                              {{ q_form.question.errors }}
+                                          </div>
+                                        </div>
+                                      {% endif %}
+                                </div>
+                                <div class="col-md-12">
+                                      <div class="form-group">
+                                        <a id="description" class="input-group input-group-alternative" spellcheck="true">{{ q_form.description }}</a>
+                                      </div>
+                                      {% if q_form.description.errors %}
+                                        <div>
+                                          <div class="alert alert-danger alert-dismissible" role="alert" style="padding:1px 1px; font-size:0.8rem;">
+                                              <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                              {{ q_form.description.errors }}
+                                          </div>
+                                        </div>
+                                      {% endif %}
+                                </div>
+                         </div>
+                        <div class="form-group">
+                           <button type="submit" class="btn btn-primary mt-4">{% trans 'Submit' %}</button>
+                        </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </main>
+
+      </div>
+
+{% endblock %}

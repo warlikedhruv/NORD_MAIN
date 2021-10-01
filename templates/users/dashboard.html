@@ -1,0 +1,276 @@
+{% extends 'layouts/base.html' %} {% load i18n %} {% load static %} 
+{% block title %} {% trans 'Dashboard - NordESG' %} {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'assets/css/user_dashboard.css' %}" />
+{% endblock stylesheets %} {% block content %}
+
+<!-- Header -->
+<div class="container-fluid pt-5">
+  <div class="row mt-4 bg-white rounded">
+    <div class="col-md-6">
+      <div
+        class="container p-4"
+        style="cursor: pointer; height: fit-content; overflow-x: hidden"
+      >
+        <div class="card-header border-0">
+          <h3
+            class="mb-0 mt-1 font-1"
+            style="
+              text-align: center;
+              font-weight: 600 !important;
+              font-family: 'Barlow', sans-serif !important;
+            "
+          >
+            {% trans 'Framework Progress' %}
+          </h3>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered align-items-center">
+            <thead class="thead-light text-dark">
+              <tr>
+                <th scope="col">{% trans 'Name' %}</th>
+                <th scope="col">{% trans 'Status' %}</th>
+                <th scope="col">{% trans 'Progress' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i,j,k in frameworks %}
+              <tr style="font-size: 12.5px">
+                <td class="text-dark"><strong>{{ i }}</strong></td>
+                <td class="text-dark">{{ j }}</td>
+                <td class="text-dark">
+                  <div class="progress">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      style="width: {{ k.current }}%"
+                      aria-valuenow="{{ k.current }}"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div
+        class="container p-4"
+        style="cursor: pointer; height: fit-content; overflow-x: hidden"
+      >
+        <div class="col-sm-8" style="margin: auto">
+          <canvas id="myChart1" style="width: 100%"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4 bg-white rounded">
+    <div class="card-header border-0" style="display: grid; place-items: center; width: 100%">
+      <form
+        method="post"
+        enctype="multipart/form-data"
+        action="{% url 'dashboard' %}"
+      >
+        {% csrf_token %}
+        <div style="display: inline-block; margin-right: 10px">
+          <div class="form-group">
+            {% for field in categoryform.visible_fields %}
+            <div
+              class="field-control"
+              style="display: inline-block; margin-right: 10px; float: left"
+            >
+              {{ field }}
+            </div>
+            {% endfor %}
+            <div
+              class="field-control"
+              style="display: inline-block; margin-right: 10px; float: left"
+            >
+              <button
+                id="category_progress"
+                type="submit"
+                name="category_progress"
+                class="btn btn-primary mt-0"
+              >
+                {% trans 'Show Progress' %}
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <section class="" style="display:flex; flex-wrap: wrap;width: 100%;">
+      <div class="col-md-6" style="display: flex;justify-content: center;align-items: center;">
+        <div
+          class="container pt-6"
+          style="cursor: pointer; height: fit-content; overflow-x: hidden"
+        >
+          <div class="col-sm-14">
+            <canvas id="myChart2"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 container" style="cursor: pointer; height: fit-content; overflow-x: hidden">
+        
+          <div class="card-header border-0">
+            <h3
+              class="mb-0"
+              style="
+                text-align: center;
+                font-family: 'Barlow', sans-serif !important;
+              "
+            >
+              {% trans 'Category Progress' %}
+            </h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-bordered align-items-center">
+              <thead class="thead-light text-dark">
+                <tr>
+                  <th scope="col"><strong>{% trans 'Name' %}</strong></th>
+                  <th scope="col">{% trans 'Status' %}</th>
+                  <th scope="col">{% trans 'Progress' %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i,j,k in categoryresults %}
+                <tr style="font-size: 12.5px">
+                  <td class="text-dark">
+                    <strong>{{ i|truncatechars:40}}</strong>
+                  </td>
+                  <td class="text-dark">{{ j|truncatechars:40}}</td>
+                  <!-- <td class="text-dark">{{ k.current }}, {{ k.end }} </td> -->
+                  <td class="text-dark">
+                    <div class="progress">
+                      <div
+                        class="progress-bar bg-success"
+                        role="progressbar"
+                        style="width: {{ k.current }}%"
+                        aria-valuenow="{{ k.current }}"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      ></div>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+    </section>
+  </div>
+
+  <div class="row mt-4 bg-white rounded">
+    <div class="col-md-12">
+      <div
+        class="container p-4"
+        style="cursor: pointer; height: fit-content; overflow-x: hidden"
+      >
+        <div class="card-header border-0">
+          <h3
+            class="mb-0"
+            style="
+              text-align: center;
+              font-family: 'Barlow', sans-serif !important;
+            "
+          >
+            {% trans 'Colleagues' %}
+          </h3>
+        </div>
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light text-dark">
+              <tr>
+                <th scope="col">{% trans 'First Name' %}</th>
+                <th scope="col">{% trans 'Email' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for org_user in org_users %}
+              <tr style="font-size: 12.5px">
+                <td class="text-dark">{{org_user.f_name}}</td>
+                <td class="text-dark">{{org_user.email}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const data = {
+    labels: {{framework | safe }},
+    datasets: [
+      {
+        label: 'Dataset 1',
+        data: {{frameworkProgressResults | safe}},
+        backgroundColor: {{chart_color|safe}},
+      }
+    ]
+  };
+
+  const labels = {{categorys | safe }};
+  const data2 = {
+    labels: labels,
+    datasets: [{
+      label: 'Category Progress',
+      backgroundColor: {{chart_color2|safe}},
+      borderColor: {{chart_color2|safe}},
+      data: {{categoryProgressResults|safe}},
+    }]
+  };
+    const config2 = {
+    type: 'bar',
+    data: data2,
+    options: {}
+  };
+  const config = {
+    type: 'pie',
+    data: data,
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        color: '#000000',
+        title: {
+          display: true,
+          text: 'FrameWork Progress',
+          padding: {
+              top: 30,
+              bottom: 10
+          },
+          font: {
+              size: 17
+          }
+
+
+        }
+      }
+    },
+  };
+
+    var myChart = new Chart(
+        document.getElementById('myChart1'),
+        config
+      );
+
+              var myChart = new Chart(
+      document.getElementById('myChart2'),
+      config2
+    );
+</script>
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

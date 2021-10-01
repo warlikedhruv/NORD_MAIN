@@ -1,0 +1,131 @@
+{% extends 'layouts/base.html' %} {% load i18n %} {% load static %} {% block title %} {% trans 'Questions - NordESG' %} {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static 'assets/css/delete_warning.css' %}" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+{% endblock %} {% block content %}
+
+<!-- Header -->
+<div class="container">
+  <br />
+  {% comment %} <div class="row">
+    <div class="col">
+      <div class="card card-body" style="font-size: 0.8rem">
+        <form method="get">
+          {{ q_filter.form }}
+          <button class="btn btn-primary" type="submit" style="font-size: 0.7rem">search</button>
+        </form>
+      </div>
+    </div>
+  </div> {% endcomment %}
+  <br />
+  <section class="content bg-white mb-4">
+    <div class="row justify-content-center">
+      <div class="container mt-3 mb-3" style="cursor: pointer; height: 100vh; overflow-x: hidden">
+        <div class="col-md d-flex justify-content-center">
+          <div class="row" style="width: 100%">
+            <div class="container">
+              <div class="d-flex justify-content-center">
+                {% if messages %} {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+                  <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                  <a>{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% else %}{{ message.tags|title }}{% endif %}!</a> {{ message }}
+                </div>
+                {% endfor %} {% endif %}
+              </div>
+            </div>
+            <div class="container">
+              <div class="col">
+                <a class="btn btn-secondary" href="{% url 'upload-question' %}"><i class="fas fa-upload mr-1" aria-hidden="true"></i><strong>{% trans 'Upload Question(s)' %}</strong></a>
+                <a class="btn btn-secondary" href="{% url 'create-cates' %}"><i class="fas fa-pen mr-1" aria-hidden="true"></i><strong>{% trans 'Create Cate(s)' %}</strong></a>
+                <a class="btn btn-secondary" href="{% url 'create-question' %}"><i class="fa fa-plus-circle ml-2" aria-hidden="true"></i><strong>{% trans 'Add Question' %}</strong></a>
+                <hr />
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead class="thead-dark" style="font-size: 0.6rem">
+                    <tr>
+                      <th scope="col"><strong>{% trans 'Framework' %}</strong></th>
+                      <th scope="col"><strong>{% trans 'Category' %}</strong></th>
+                      <th scope="col"><strong>{% trans 'Sub Category' %}</strong></th>
+                      <th scope="col"><strong>{% trans 'Question' %}</strong></th>
+                      <th scope="col"><strong>{% trans 'Description' %}</strong></th>
+                      <th scope="col"><strong>{% trans 'Unit' %}</strong></th>
+                      <th scope="col" class="text-danger"><strong>{% trans 'Delete' %}</strong></th>
+                      <th scope="col" class="text-success"><strong>{% trans 'Edit' %}</strong></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for x in lists %}
+                    <tr style="font-size: 12.5px">
+                      <td class="text-dark">{{ x.cate.framework|truncatechars:12 }}</td>
+                      <td class="text-dark">{{ x.cate.category|truncatechars:12 }}</td>
+                      <td class="text-dark">{{ x.cate.sub_category|truncatechars:12 }}</td>
+                      <td class="text-dark">{{ x.ques_map.question|truncatechars:30 }}</td>
+                      <td class="text-dark">{{ x.ques_map.description|truncatechars:20 }}</td>
+                      <td class="text-dark">{{ x.ques_map.unit|truncatechars:12 }}</td>
+                      <td class="text-danger">{% include 'common_templates/confirm_question_delete.html' %}</td>
+                      <td class="text-success">
+                        <span
+                          ><a class="btn btn-success" style="font-size: 0.5rem" href="{% url 'edit-question' pk=x.id %}"><i class="fa fa-pen" aria-hidden="true"></i></a
+                        ></span>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer py-4">
+                <nav aria-label="...">
+                  {% if lists.has_other_pages %}
+                  <ul class="pagination justify-content-end mb-0">
+                    {% if lists.has_previous %}
+                    <li class="page-item disabled">
+                      <a class="page-link" href="?page={{ lists.previous_page_number }}">
+                        <i class="fas fa-angle-left"></i>
+                        <span class="sr-only">Previous</span>
+                      </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="sr-only">Previous</span></li>
+                    {% endif %} {% for x in lists.paginator.page_range %} {% if lists.number == x %}
+                    <li class="page-item active">
+                      <span>{{ x }} <span class="sr-only">(current)</span></span>
+                    </li>
+                    {% else %}
+                    <li class="page-item active"><a class="page-link" href="?page={{ x }}">{{ x }}</a></li>
+                    {% endif %} {% endfor %} {% if lists.has_next %}
+                    <li class="page-item disabled">
+                      <a class="page-link" href="?page={{ lists.next_page_number }}">
+                        <i class="fas fa-angle-right"></i>
+                        <span class="sr-only">Next</span>
+                      </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                      <span class="sr-only">Next</span>
+                    </li>
+                    {% endif %}
+                  </ul>
+                  {% endif %}
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% include "includes/footer.html" %}
+</div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE -->
+{% block javascripts %}{% endblock javascripts %}

@@ -1,0 +1,65 @@
+{% extends 'layouts/base.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}
+{% trans 'Update Question' %}
+{% endblock %}
+
+{% block breadcrumb %}
+
+{% load i18n %}
+<!-- Breadcrumb-->
+<ol class="breadcrumb border-0 m-0">
+<li class="breadcrumb-item active">{% trans 'Update Question' %}</li>
+<!-- Breadcrumb Menu-->
+</ol>
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- Header -->
+
+    <div class="c-body row pt-4">
+        <main class="c-main col-md-6  offset-md-3">
+          <div class="container-fluid">
+            <div class="fade-in">
+             <div class="d-lex justify-content-center">
+              <div class="card">
+
+                <div class="card-header">{% trans 'Edit Question' %}</div>
+                <div class="card-body">
+                  <div class="bd-example">
+
+                    <div class="container">
+                       <div class="d-flex justify-content-center">
+                        {% if messages  %}
+                         {% for message in messages %}
+                              <div class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+                                <span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
+                                <a>{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error{% else %}{{ message.tags|title }}{% endif %}!</a> {{ message }}
+                              </div>
+                         {% endfor %}
+                        {% endif %}
+                       </div>
+                    </div>
+                    <form action="{% url 'edit-question' pk=q_id %}" method="post"></from>
+
+                        {% csrf_token %}
+                        {{ q_form }}
+                        {{ c_form }}
+                      <button type="submit" class="btn btn-primary mt-3">{% trans 'Submit' %}</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+             </div>
+            </div>
+          </div>
+        </main>
+
+      </div>
+
+{% endblock %}

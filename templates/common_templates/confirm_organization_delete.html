@@ -1,0 +1,22 @@
+<a href="#myModal{{x.id}}" class="btn btn-danger" style="font-size:0.5rem;" data-toggle="modal"><i class="fa fa-trash" aria-hidden="true"></i></a>
+<!-- Modal HTML -->
+<div id="myModal{{x.id}}" class="modal fade">
+	<div class="modal-dialog modal-confirm">
+		<div class="modal-content">
+			<div class="modal-header flex-column">
+				<div class="icon-box">
+					<i class="material-icons">&#xE5CD;</i>
+				</div>						
+				<h4 class="modal-title w-100">Are you sure?</h4>	
+                <a class="close" data-dismiss="modal" aria-hidden="true">&times;</a>
+			</div>
+			<div class="modal-body">
+				<p>Do you really want to delete the organisation ? <br> This process cannot be undone.</p>
+			</div>
+			<div class="modal-footer justify-content-center">
+				<a  class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+				<a  class="btn btn-danger" href="{% url 'delete-org' x.id %}">Confirm Delete</a>
+			</div>
+		</div>
+	</div>
+</div>     
