@@ -97,7 +97,7 @@ def edit_form(request, code):
     else:
         formInfo = formInfo[0]
     # Checking if form creator is user
-    if formInfo.creator != request.user:
+    if formInfo.creator.tenant != request.user.tenant:
         return HttpResponseRedirect(reverse("403"))
     return render(request, "stakeholder/form.html", {
         "code": code,
@@ -446,7 +446,7 @@ def score(request, code):
     # else:
     #     formInfo = formInfo[0]
     # # Checking if form creator is user
-    if formInfo.creator != request.user:
+    if formInfo.creator.tenant != request.user.tenant:
         return HttpResponseRedirect(reverse("403"))
     else:
         data['form'] = formInfo
@@ -583,7 +583,7 @@ def responses(request, code):
     else:
         formInfo = formInfo[0]
     # Checking if form creator is user
-    if formInfo.creator != request.user:
+    if formInfo.creator.tenant != request.user.tenant:
         return HttpResponseRedirect(reverse("403"))
     return render(request, "stakeholder/responses.html", {
         "form": formInfo,

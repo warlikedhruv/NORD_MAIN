@@ -919,8 +919,8 @@ def save_answer(request,id):
             current_answer.optional = "optional" in answers
             current_answer.set_goal = "setgoal" in answers
             current_answer.user = request.user
-            print(current_answer.set_goal)
             current_answer.save()
+            print(current_answer.set_goal)
             print(current_answer.value,current_answer.comment,current_answer.optional)
             print('Updated Answered for ',current_answer.question.question)
             messages.success(request, f'Answer Updated Success Fully..')
@@ -942,7 +942,8 @@ def save_answer(request,id):
                 status = 'OK',
                 year = year,
                 comment = answers['comment'],
-                optional = "optional" in answers
+                optional = "optional" in answers,
+                set_goal = "setgoal" in answers
             )
             print('Answered for ',question_id.question)
             #print(new_answer.value,new_answer.comment,new_answer.optional)

@@ -80,7 +80,7 @@
 
   <div class="card m-3">
     <div class="card-header" id="heading{{question.question.id}}">
-      <h5 class="mb-0">
+      <h5 class="mb-0" style="text-align: center;">
         <button
           class="btn btn-hover-text-white btn-link collapsed"
           type="button"
@@ -90,13 +90,13 @@
           aria-controls="collapse{{question.question.id}}"
         >
           <span style="color: black">{{ question.year }}</span> -
-          {{question.question.question}} {% if question.value == None%}
+          <span style="width: 100%;white-space: pre-wrap;">{{question.question.question}}</span> {% if question.value == None%}
           <span class="badge badge-danger">Not Attempted</span>
           {% else %}
           <span class="badge badge-success">Attempted</span>
           {% endif %}
         </button>
-        <a class="btn btn-danger" id="delete-btn" href="{% url 'remove-goal' goal_id=question.id %}" >
+        <a class="btn btn-danger" id="delete-btn" href="{% url 'remove-goal' goal_id=question.id %}" style="padding:3px;padding-left:5px;padding-right:5px;font-size: .75rem;">
           Delete
         </a>
       </h5>
@@ -119,7 +119,7 @@
             <div class="col-md-12">
               <div class="form-group">
                 <strong>{% trans 'Description' %}</strong>
-                <pre style="white-space: normal;">{{question.question.description}}</pre>
+                <pre style="white-space: pre-wrap;">{{question.question.description}}</pre>
               </div>
             </div>
           </div>
@@ -141,7 +141,7 @@
               <div class="form-group">
                 <strong>{% trans 'Year' %}</strong>
                 <br>
-                <input name="question-year" value="{{question.year}}"></input>
+                <input name="question-year" value="{{question.year}}" disabled></input>
               </div>
             </div>
           </div>
@@ -149,7 +149,7 @@
             <div class="col-md-6">
               <div class="form-group">
                 <strong class="form-control-label">{% trans 'Answer' %}</strong>
-                <textarea name="value" class="form-control" cols="30" rows="10">
+                <textarea name="value" class="form-control" cols="30" rows="1">
 {{question.goal_answer|default_if_none:""}}</textarea
                 >
               </div>
@@ -163,7 +163,7 @@
                   name="comment"
                   class="form-control"
                   cols="30"
-                  rows="10"
+                  rows="1"
                 >
 {{question.goal_comment|default_if_none:""}}</textarea
                 >

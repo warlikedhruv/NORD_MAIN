@@ -132,6 +132,7 @@
   });
 
   $(document).ready(() => {
+    var yearSelected = $("#id_year").attr('disabled','disabled');
     var optionSelected = $("#id_category").find("option:selected");
     var FrameworkSelected = $("#id_framework").find("option:selected");
     var valueSelected1 = optionSelected.val();
