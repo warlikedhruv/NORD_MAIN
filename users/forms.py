@@ -7,7 +7,12 @@ from questions.models import *
 from languages.models import *
 from django.contrib.auth.forms import PasswordResetForm
 import datetime
+from django.conf import settings
+from django.db.models.query_utils import Q
 
+def get_user_language():
+    user_language = settings.LANGUAGE_CODE
+    return user_language.upper()
 
 def get_languages():
     return Language.objects.all().order_by('id')
@@ -16,13 +21,13 @@ def get_organisations():
     return Tenant.objects.all().order_by('id')
 
 def get_frameworks():
-    return  Category.objects.filter(type='framework').order_by('id')
+    return  Category.objects.filter(Q(type='framework') & Q(language = get_user_language())).order_by('id')
 
 def get_categories():
-    return Category.objects.filter(type='category').order_by('id')
+    return Category.objects.filter(Q(type='category') & Q(language = get_user_language())).order_by('id')
 
 def get_subcategories():
-    return Category.objects.filter(type='sub_category').order_by('id')
+    return Category.objects.filter(Q(type='sub_category') & Q(language = get_user_language())).order_by('id')
 
 class DivErrorList(ErrorList):
     def __str__(self):
@@ -163,7 +168,7 @@ class UserUpadateForm(forms.ModelForm):
 
 
 year_dropdown = []
-for y in range(2011, (datetime.datetime.now().year + 5)):
+for y in range(2011, (datetime.datetime.now().year + 1)):
     year_dropdown.append((y,y))
 status_dropdown = [
     ('All','All'),
@@ -172,9 +177,9 @@ status_dropdown = [
     ('Not Applicable','Not Applicable')
 ]
 class AddDataForm(forms.Form):
-    query_framework = Category.objects.filter(type='framework')
-    query_category = Category.objects.filter(type='category')
-    query_sub_category = Category.objects.filter(type='sub_category')
+    query_framework = get_frameworks()
+    query_category = get_categories()
+    query_sub_category = get_subcategories()
     framework = forms.ModelChoiceField(queryset=query_framework,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left'}), required=False)
     category = forms.ModelChoiceField(queryset=query_category,widget=forms.Select(
@@ -190,9 +195,9 @@ class AddDataForm(forms.Form):
  
 
 class StatusForm(forms.Form):
-    query_framework = Category.objects.filter(type='framework')
-    query_category = Category.objects.filter(type='category')
-    query_sub_category = Category.objects.filter(type='sub_category')
+    query_framework = get_frameworks()
+    query_category = get_categories()
+    query_sub_category = get_subcategories()
     framework = forms.ModelChoiceField(queryset=query_framework,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left'}), required=False)
     category = forms.ModelChoiceField(queryset=query_category,widget=forms.Select(
@@ -200,10 +205,14 @@ class StatusForm(forms.Form):
     sub_category = forms.ModelChoiceField(queryset=query_sub_category,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left','maxlength':'12'}), required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(AddDataForm, self).__init__(*args, **kwargs)
+        self.fields['framework'].queryset = get_frameworks()
+
 class StatusForm1(forms.Form):
-    query_framework = Category.objects.filter(type='framework')
-    query_category = Category.objects.filter(type='category')
-    query_sub_category = Category.objects.filter(type='sub_category')
+    query_framework = get_frameworks()
+    query_category = get_categories()
+    query_sub_category = get_subcategories()
     framework = forms.ModelChoiceField(queryset=query_framework, widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text'}), required=False)
     category = forms.ModelChoiceField(queryset=query_category, widget=forms.Select(
@@ -213,12 +222,15 @@ class StatusForm1(forms.Form):
     year = forms.ChoiceField(choices=year_dropdown, initial=datetime.datetime.now().year, widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text'}), required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(AddDataForm, self).__init__(*args, **kwargs)
+        self.fields['framework'].queryset = get_frameworks()
 
 
 class DataStatusForm(forms.Form):
-    query_framework = Category.objects.filter(type='framework')
-    query_category = Category.objects.filter(type='category')
-    query_sub_category = Category.objects.filter(type='sub_category')
+    query_framework = get_frameworks()
+    query_category = get_categories()
+    query_sub_category = get_subcategories()
     framework = forms.ModelChoiceField(queryset=query_framework,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text'}), required=False)
     category = forms.ModelChoiceField(queryset=query_category,widget=forms.Select(
@@ -230,12 +242,15 @@ class DataStatusForm(forms.Form):
     status = forms.ChoiceField(choices = status_dropdown, initial=status_dropdown[0][0] ,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text'}), required = False)
 
+    def __init__(self, *args, **kwargs):
+        super(AddDataForm, self).__init__(*args, **kwargs)
+        self.fields['framework'].queryset = get_frameworks()
 
 
 class TodoForm(forms.Form):
-    query_framework = Category.objects.filter(type='framework')
-    query_category = Category.objects.filter(type='category')
-    query_sub_category = Category.objects.filter(type='sub_category')
+    query_framework = get_frameworks()
+    query_category = get_categories()
+    query_sub_category = get_subcategories()
     framework = forms.ModelChoiceField(queryset=query_framework,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left'}), required=False)
     category = forms.ModelChoiceField(queryset=query_category,widget=forms.Select(
@@ -243,9 +258,13 @@ class TodoForm(forms.Form):
     sub_category = forms.ModelChoiceField(queryset=query_sub_category,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left','maxlength':'12'}), required=False)
 
+    def __init__(self, *args, **kwargs):
+        super(AddDataForm, self).__init__(*args, **kwargs)
+        self.fields['framework'].queryset = get_frameworks()
+
 class FrameworCategoryProgressForm(forms.Form):
-    query_framework = Category.objects.filter(type='framework')
+    query_framework = get_frameworks()
     framework = forms.ModelChoiceField(queryset=query_framework,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text', 'style': 'padding-right:2rem;padding-left:2rem'}), required=False)
-    
+
     # display:flex;justify-content:center;align-items:center

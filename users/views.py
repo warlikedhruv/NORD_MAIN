@@ -366,11 +366,9 @@ def users_detail(request):
     return render(request, 'users/users_detail.html',{'lists': lists,'user_filter':user_filter})
 
 ######################################## User DashBoard Code ####################################
-def get_user_language(request):
-    if request.session.get('user_language') is None:
-        return 'EN'
-    else:
-        return request.session.get('user_language').upper()
+def get_user_language():
+    user_language = settings.LANGUAGE_CODE
+    return user_language.upper()
 
 
 def randomHex():
@@ -384,7 +382,7 @@ def randomHex():
 def user_dashboard(request):
     from django.conf import settings
     print("-------------------->",settings.LANGUAGE_CODE)
-    print('Choosen Language...................',get_user_language(request))
+    print('Choosen Language...................',get_user_language())
     from django.utils import translation
     if request.method == "POST":
         categoryform = FrameworCategoryProgressForm(request.POST)
@@ -399,7 +397,7 @@ def user_dashboard(request):
                 request.session['category_progress_form'] = categoryformoptions
                 print('Current category_progress_form  session: ',request.session.get('category_progress_form'))
                 ###############################################################################
-            category,category_total,category_answers=progressPerCategory(categoryformoptions['framework'],request.user.tenant.id,datetime.now().year,get_user_language(request))
+            category,category_total,category_answers=progressPerCategory(categoryformoptions['framework'],request.user.tenant.id,datetime.now().year,get_user_language())
             category_resultsText=[]
             category_results =[]
             category_resultsNum = []
@@ -415,7 +413,7 @@ def user_dashboard(request):
                 {"current": int(temp[0]) * 100 / int(temp[1])})
             
 
-            framework,questionCount,answerCount = progressPerFramework(request.user.tenant.id,datetime.now().year,get_user_language(request))
+            framework,questionCount,answerCount = progressPerFramework(request.user.tenant.id,datetime.now().year,get_user_language())
             frameworkProgressResults = []
             frameworkProgressResultsText = []
             frameworkProgressResultsNum = []
@@ -428,12 +426,12 @@ def user_dashboard(request):
                 temp = i.split(" ")
                 temp = temp[0].split("/")
                 frameworkProgressResultsNum.append(
-                {"current": int(temp[0]) * 100 / int(temp[1])})
+                {"current": (int(temp[0]) * 100 / int(temp[1]))*100})
 
             org_users = Tenant.objects.all().get(id=request.user.tenant.id).tenant_1.all().exclude(email=request.user.email)
             chart_color=[ randomHex() for i in range(len(framework))]
             chart_color2=[ randomHex() for i in range(len(framework))]
-            #print(category_resultsText)
+            print(zip(framework,frameworkProgressResultsText,  frameworkProgressResultsNum))
             data = {
                     'frameworks':zip(framework,frameworkProgressResultsText,  frameworkProgressResultsNum),
                     'org_users':org_users,
@@ -454,7 +452,7 @@ def user_dashboard(request):
         else:
             framework_id = request.session.get('category_progress_form')['framework']
 
-        category,category_total,category_answers=progressPerCategory(framework_id,request.user.tenant.id,datetime.now().year,get_user_language(request))
+        category,category_total,category_answers=progressPerCategory(framework_id,request.user.tenant.id,datetime.now().year,get_user_language())
         category_resultsText=[]
         category_results =[]
         category_resultsNum = []
@@ -467,10 +465,10 @@ def user_dashboard(request):
         for i in category_resultsText: #splitting text progress values
             temp = i.split(" ")
             temp = temp[0].split("/")
-            category_resultsNum.append({"current": int(temp[0]) * 100 / int(temp[1])})
+            category_resultsNum.append({"current": (int(temp[0]) * 100 / int(temp[1]))*100})
         print(category_resultsNum)
 
-        framework,questionCount,answerCount = progressPerFramework(request.user.tenant.id,datetime.now().year,get_user_language(request))
+        framework,questionCount,answerCount = progressPerFramework(request.user.tenant.id,datetime.now().year,get_user_language())
         frameworkProgressResults = []
         frameworkProgressResultsText = []
         frameworkProgressResultsNum=[]
@@ -495,7 +493,8 @@ def user_dashboard(request):
         # user_language = 'de' 
         # translation.activate(user_language)
         #response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
-
+        print('category progress form..',request.session.get('category_progress_form'))
+        print(framework,frameworkProgressResultsText,  frameworkProgressResultsNum)
         data = {
                 'frameworks':zip(framework,frameworkProgressResultsText, frameworkProgressResultsNum),
                 'org_users':org_users,
@@ -514,7 +513,7 @@ def user_dashboard(request):
 
 
 
-def get_questions_per_year(category_id,framework_id,subcategory_id,org_id,year,industry):
+def get_questions_per_year(category_id,framework_id,subcategory_id,org_id,year,industry,language):
     print('Filter Data for {} year'.format(year))
     sql_query ='''
         select b.id from (
@@ -528,12 +527,12 @@ def get_questions_per_year(category_id,framework_id,subcategory_id,org_id,year,i
         (select id,question_id,organisation_id,
         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY organisation_id) AS row_id from questions_answer
         where (year={} or year is null) and (organisation_id={} or organisation_id is null) and 
-        (question_id in (select id from questions_question where industry = '{}'))
+        (question_id in (select id from questions_question where industry = '{}' and language ='{}'))
         ) c
         where row_id = 1
         ) b
         on a.ques_map_id = b.question_id
-            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry)
+            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry,language)
 
     with connection.cursor() as cursor:
         cursor.execute(sql_query)
@@ -548,7 +547,7 @@ def get_questions_per_year(category_id,framework_id,subcategory_id,org_id,year,i
     return query
 
 
-def get_answers_per_year(category_id,framework_id,subcategory_id,org_id,year,status,industry):
+def get_answers_per_year(category_id,framework_id,subcategory_id,org_id,year,status,industry,language):
     print('Filter Data for {} year'.format(year))
     sql_query_all ='''
         select b.id from (
@@ -562,12 +561,12 @@ def get_answers_per_year(category_id,framework_id,subcategory_id,org_id,year,sta
         (select id,question_id,organisation_id,
         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY organisation_id) AS row_id from questions_answer
         where (year={} or year is null) and (organisation_id={} or organisation_id is null) and
-        (question_id in (select id from questions_question where industry = '{}'))
+        (question_id in (select id from questions_question where industry = '{}' and language ='{}'))
         ) c
         where row_id = 1
         ) b
         on a.ques_map_id = b.question_id
-            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry)
+            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry,language)
 
     sql_query_attempted ='''
         select b.id from (
@@ -581,12 +580,12 @@ def get_answers_per_year(category_id,framework_id,subcategory_id,org_id,year,sta
         (select id,question_id,organisation_id,status,
         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY organisation_id) AS row_id from questions_answer
         where (year={} or year is null) and (organisation_id={} or organisation_id is null) and
-        (question_id in (select id from questions_question where industry = '{}'))
+        (question_id in (select id from questions_question where industry = '{}' and language ='{}'))
         ) c
         where row_id = 1 and status = 'OK'
         ) b
         on a.ques_map_id = b.question_id
-            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry)
+            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry,language)
 
     sql_query_not_attempted ='''
         select b.id from (
@@ -600,12 +599,12 @@ def get_answers_per_year(category_id,framework_id,subcategory_id,org_id,year,sta
         (select id,question_id,organisation_id,status,
         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY organisation_id) AS row_id from questions_answer
         where (year={} or year is null) and (organisation_id={} or organisation_id is null) and
-        (question_id in (select id from questions_question where industry = '{}'))
+        (question_id in (select id from questions_question where industry = '{}' and language ='{}'))
         ) c
         where row_id = 1  and status = 'NA'
         ) b
         on a.ques_map_id = b.question_id
-            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry)
+            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry,language)
 
     sql_query_optional ='''
         select b.id from (
@@ -619,12 +618,12 @@ def get_answers_per_year(category_id,framework_id,subcategory_id,org_id,year,sta
         (select id,question_id,organisation_id,
         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY organisation_id) AS row_id from questions_answer
         where (year={} or year is null) and (organisation_id={} or organisation_id is null) and (optional = true) and
-        (question_id in (select id from questions_question where industry = '{}'))
+        (question_id in (select id from questions_question where industry = '{}' and language ='{}'))
         ) c
         where row_id = 1
         ) b
         on a.ques_map_id = b.question_id
-            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry)
+            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry,language)
 
     if status == "All":
         sql_query=sql_query_all
@@ -651,7 +650,7 @@ def get_answers_per_year(category_id,framework_id,subcategory_id,org_id,year,sta
             query |= Q(id=-1)
     return query
 
-def get_answers_per_year_goal(category_id,framework_id,subcategory_id,org_id,year,industry):
+def get_answers_per_year_goal(category_id,framework_id,subcategory_id,org_id,year,industry,language):
     print('Filter Data for {} year'.format(year))
 
     sql_query_goal ='''
@@ -666,12 +665,12 @@ def get_answers_per_year_goal(category_id,framework_id,subcategory_id,org_id,yea
         (select id,question_id,organisation_id,
         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY organisation_id) AS row_id from questions_answer
         where (year={} or year is null) and (organisation_id={} or organisation_id is null) and (set_goal = true) and
-        (question_id in (select id from questions_question where industry = '{}'))
+        (question_id in (select id from questions_question where industry = '{}' and language ='{}'))
         ) c
         where row_id = 1
         ) b
         on a.ques_map_id = b.question_id
-            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry)
+            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry,language)
 
 
 
@@ -689,7 +688,7 @@ def get_answers_per_year_goal(category_id,framework_id,subcategory_id,org_id,yea
             query |= Q(id=-1)
     return query
 
-def get_answers_per_year_report(category_id,framework_id,subcategory_id,org_id,year,industry):
+def get_answers_per_year_report(category_id,framework_id,subcategory_id,org_id,year,industry,language):
     print('Filter Data for {} year'.format(year))
 
     sql_query_goal ='''
@@ -704,12 +703,12 @@ def get_answers_per_year_report(category_id,framework_id,subcategory_id,org_id,y
         (select id,question_id,organisation_id,
         ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY organisation_id) AS row_id from questions_answer
         where (year={}) and (organisation_id={} or organisation_id is null)  and
-        (question_id in (select id from questions_question where industry = '{}'))
+        (question_id in (select id from questions_question where industry = '{}' and language ='{}'))
         ) c
         where row_id = 1
         ) b
         on a.ques_map_id = b.question_id
-            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry)
+            '''.format(category_id,framework_id,subcategory_id,year,org_id,industry,language)
 
 
 
@@ -729,7 +728,7 @@ def get_answers_per_year_report(category_id,framework_id,subcategory_id,org_id,y
 
 
 
-def get_questions(category_id,framework_id,subcategory_id,org_id,industry):
+def get_questions(category_id,framework_id,subcategory_id,org_id,industry,language):
     print('Filter Data for {} Organization'.format(org_id))
     sql_query ='''
         select b.id from (
@@ -741,12 +740,12 @@ def get_questions(category_id,framework_id,subcategory_id,org_id,industry):
         (select * from
         ( SELECT id,question_id,ROW_NUMBER() OVER (PARTITION BY question_id ORDER BY organisation_id) AS row_id
         FROM questions_answer where (organisation_id={} or organisation_id is null) and
-        (question_id in (select id from questions_question where industry = '{}'))
+        (question_id in (select id from questions_question where industry = '{}' and language ='{}'))
         ) c
         where row_id = 1
         ) b
         on a.ques_map_id = b.question_id
-            '''.format(category_id,framework_id,subcategory_id,org_id,industry)
+            '''.format(category_id,framework_id,subcategory_id,org_id,industry,language)
 
     with connection.cursor() as cursor:
         cursor.execute(sql_query)
@@ -764,7 +763,7 @@ def get_questions(category_id,framework_id,subcategory_id,org_id,industry):
 
 @login_required(login_url="/user-login")
 def add_data(request):
-    print('Choosen Language...................',get_user_language(request))
+    print('Choosen Language...................',get_user_language())
     if request.method == 'POST':
         filter_form = AddDataForm(request.POST)
         questionForm = QuestionAnswerForm(request.POST)
@@ -797,7 +796,7 @@ def add_data(request):
             req_subcategory = filter_options.get('sub_category')
             req_year = filter_options.get('year')
             #print('filter_data',req_category,req_framework,req_subcategory,req_year,request.user.tenant.id)
-            questions = Answer.objects.filter(get_questions_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,request.user.industry)).order_by('question')
+            questions = Answer.objects.filter(get_questions_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,request.user.industry,get_user_language())).order_by('question')
             #print(questions)
             data = {
                     'questions':questions,
@@ -830,18 +829,16 @@ def add_data(request):
                 print(questionForm.errors)
                 return redirect('add-data')
     else:
-        print('Current Filter Form session: ',request.session.get('filter_form'))
-        form = AddDataForm(initial=request.session.get('filter_form'))
+        form = AddDataForm()
         questionForm = QuestionAnswerForm()
         question_filter_data = request.session.get('filter_form')
-        if question_filter_data!=None:
-            req_category=question_filter_data['category']
-            req_framework=question_filter_data['framework']
-            req_subcategory=question_filter_data['sub_category']
-            req_year = question_filter_data['year']
-            questions = Answer.objects.filter(get_questions_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,request.user.industry)).order_by('question')
-        else:
-            questions=[]
+        # if question_filter_data!=None:
+        #     req_category=question_filter_data['category']
+        #     req_framework=question_filter_data['framework']
+        #     req_subcategory=question_filter_data['sub_category']
+        #     req_year = question_filter_data['year']
+        #questions = Answer.objects.filter(get_questions_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,request.user.industry,get_user_language())).order_by('question')
+        questions=[]
         data = {
                 'form':form,
                 'questionForm':questionForm,
@@ -877,7 +874,7 @@ def data_status(request):
             req_year = filter_options.get('year')
             req_status = filter_options.get('status')
             print('Data status filter for ',req_year,req_status)
-            answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry)).order_by('question')
+            answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry,get_user_language())).order_by('question')
             data={
                 'form':DataStatusForm(initial=request.session.get('data_status_form')),
                 'answers':answers
@@ -895,7 +892,7 @@ def data_status(request):
             req_year = filter_options.get('year')
             req_status = filter_options.get('status')
             print('Data status filter for ',req_year,req_status)
-            answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry)).order_by('question')
+            answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry,get_user_language())).order_by('question')
            
         data = {
                 'form':form,
@@ -1056,7 +1053,7 @@ def review_data(request):
             req_category = filter_options.get('category')
             req_subcategory = filter_options.get('sub_category')
             print('filter_data',req_category,req_framework,req_subcategory,request.user.tenant.id)
-            questions = Answer.objects.filter(get_questions(req_category,req_framework,req_subcategory,request.user.tenant.id,request.user.industry))
+            questions = Answer.objects.filter(get_questions(req_category,req_framework,req_subcategory,request.user.tenant.id,request.user.industry,get_user_language()))
             print(questions)
             data = {
                     'questions':questions,
@@ -1092,7 +1089,7 @@ def review_data(request):
             req_category=question_filter_data['category']
             req_framework=question_filter_data['framework']
             req_subcategory=question_filter_data['sub_category']
-            questions = Answer.objects.filter(get_questions(req_category,req_framework,req_subcategory,request.user.tenant.id,request.user.industry))
+            questions = Answer.objects.filter(get_questions(req_category,req_framework,req_subcategory,request.user.tenant.id,request.user.industry,get_user_language()))
         else:
             print('Get Else Condition')
             questions=[]
@@ -1219,7 +1216,7 @@ def report(request):
             answers = Answer.objects.filter(
                 get_answers_per_year_report(req_category, req_framework, req_subcategory, request.user.tenant.id,
                                           req_year,
-                                          request.user.industry)).order_by('question')
+                                          request.user.industry,get_user_language())).order_by('question')
         report_list = []
         for answer in answers:
             #report_list.append({"question": answer.question.question, "answer": answer.value})
@@ -1303,7 +1300,7 @@ def goals_and_kpi(request):
         print('Data status filter for ', req_year, req_status)
         answers = Answer.objects.filter(
             get_answers_per_year_goal(req_category, req_framework, req_subcategory, request.user.tenant.id, req_year,
-                                 request.user.industry)).order_by('question')
+                                 request.user.industry,get_user_language())).order_by('question')
         data['questions'] = answers
         data['form'] = form
 
@@ -1338,7 +1335,7 @@ def goals_and_kpi(request):
             print('Data status filter for ', req_year)
             answers = Answer.objects.filter(
                 get_answers_per_year_goal(req_category, req_framework, req_subcategory, request.user.tenant.id, req_year,
-                                      request.user.industry)).order_by('question')
+                                      request.user.industry,get_user_language())).order_by('question')
 
 
         data['questions'] = answers
@@ -1373,7 +1370,7 @@ def todos(request):
             req_year = datetime.now().year
             req_status = "Not Attempted"
             print('Data status filter for ',req_year,req_status)
-            answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry)).order_by('question')
+            answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry,get_user_language())).order_by('question')
             print(answers)
             data={
                 'form':TodoForm(initial=request.session.get('todo_form')),
@@ -1392,7 +1389,7 @@ def todos(request):
             req_year = datetime.now().year
             req_status = "Not Attempted"
             print('Data status filter for ',req_status)
-            answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry)).order_by('question')
+            answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry,get_user_language())).order_by('question')
         print(answers)
         data = {
                 'form':todo_form,
@@ -1433,11 +1430,11 @@ def save_single_answer(request,id):
 
 @login_required(login_url="/user-login")
 def getcategories(request):
-    print('Choosen Language...................',get_user_language(request))
+    print('Choosen Language...................',get_user_language())
     print('Getting Categories..',request.GET)
     #print(request.GET['cnt'],request.GET['id_value'])
     framework_id = request.GET['id_value']
-    print('raju..',framework_id,get_user_language(request))
+    print('raju..',framework_id,get_user_language())
     categories = CategoryMapping.objects.filter(Q(framework=framework_id))
     result_set=[]
     print(categories)
@@ -1452,7 +1449,7 @@ def getcategories(request):
 @login_required(login_url="/user-login")
 def getsubcategories(request):
     print('Getting SubCategories..',request.GET)
-    print('Choosen Language...................',get_user_language(request))
+    print('Choosen Language...................',get_user_language())
     print('######## Sub categories ############')
     category_id = request.GET['id_value']
     framework_id = request.GET['framework']
