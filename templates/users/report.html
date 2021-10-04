@@ -17,7 +17,42 @@
       <div class="loader"></div>
       <p>Fetching data...</p>
     </div>
-    <!-- ------------ -->
+    <div class="table-responsive">
+          <table class="table table-bordered align-items-center">
+            <thead class="thead-light text-dark">
+              <tr>
+                <th scope="col">{% trans 'Name' %}</th>
+                <th scope="col">{% trans 'Status' %}</th>
+                <th scope="col">{% trans 'Progress' %}</th>
+                <th scope="col">{% trans 'Download Data' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i,j,k,l in frameworks %}
+              <tr style="font-size: 12.5px">
+                <td class="text-dark"><strong>{{ i }}</strong></td>
+                <td class="text-dark">{{ j }}</td>
+                <td class="text-dark">
+                  <div class="progress">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      style="width: {{ k.current }}%"
+                      aria-valuenow="{{ k.current }}"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                </td>
+                <td class="text-dark"><a href="{% url 'download_report' id=l %}"> id : {{ l }}Download</a>
+
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+    <!--
     <form
       method="post"
       enctype="multipart/form-data"
@@ -73,7 +108,10 @@
     {{ message }}
   </div>
   {% endfor %} {% endif %}
+  -->
 </div>
+</div>
+
 
 
 

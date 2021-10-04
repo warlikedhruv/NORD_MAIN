@@ -1146,28 +1146,67 @@ def display_data(request,id):
         }
     return render(request,'users/display_data.html',data)
 
+def get_answer_for_report(framework_id,industry,org_id,year):
+    print('Filter Data for {} year'.format(year))
+    sql_query ='''
+        select id from questions_answer 
+        where question_id in
+        (select ques_map_id from questions_questioncategorymapping
+        where cate_id in (select id from questions_categorymapping where framework_id = {}))
+        and question_id in (select id from questions_question where industry = '{}')
+        and organisation_id = {} and year = {}
+            '''.format(framework_id,industry,org_id,year)
 
-def report_pdf_view(request):
+    with connection.cursor() as cursor:
+        cursor.execute(sql_query)
+        data = cursor.fetchall()
+        query = Q()
+        if data!=[]:
+            for i in data:
+                query |= Q(id=i[0])
+            #print('Query is ',query)
+        else:
+            query |= Q(id=-1)
+    return query
 
-    sales = [
-        {"item": "Keyboard", "amount": "$120,00"},
-        {"item": "Mouse", "amount": "$10,00"},
-        {"item": "House", "amount": "$1 000 000,00"},
-    ]
-    pdf = FPDF('P', 'mm', 'A4')
-    pdf.add_page()
-    pdf.set_font('courier', 'B', 16)
-    pdf.cell(40, 10, 'This is what you have sold this month so far:', 0, 1)
-    pdf.cell(40, 10, '', 0, 1)
-    pdf.set_font('courier', '', 12)
-    pdf.cell(200, 8, f"{'Item'.ljust(30)} {'Amount'.rjust(20)}", 0, 1)
-    pdf.line(10, 30, 150, 30)
-    pdf.line(10, 38, 150, 38)
-    for line in sales:
-        pdf.cell(200, 8, f"{line['item'].ljust(30)} {line['amount'].rjust(20)}", 0, 1)
+def download_report(request,id):
 
-    pdf.output('tuto1.pdf', 'F')
-    return redirect('report')
+    # sales = [
+    #     {"item": "Keyboard", "amount": "$120,00"},
+    #     {"item": "Mouse", "amount": "$10,00"},
+    #     {"item": "House", "amount": "$1 000 000,00"},
+    # ]
+    # pdf = FPDF('P', 'mm', 'A4')
+    # pdf.add_page()
+    # pdf.set_font('courier', 'B', 16)
+    # pdf.cell(40, 10, 'This is what you have sold this month so far:', 0, 1)
+    # pdf.cell(40, 10, '', 0, 1)
+    # pdf.set_font('courier', '', 12)
+    # pdf.cell(200, 8, f"{'Item'.ljust(30)} {'Amount'.rjust(20)}", 0, 1)
+    # pdf.line(10, 30, 150, 30)
+    # pdf.line(10, 38, 150, 38)
+    # for line in sales:
+    #     pdf.cell(200, 8, f"{line['item'].ljust(30)} {line['amount'].rjust(20)}", 0, 1)
+    #
+    # pdf.output('tuto1.pdf', 'F')
+    print("download report")
+    answers = Answer.objects.filter(get_answer_for_report(framework_id=id, industry=request.user.industry, org_id=request.user.tenant.id, year=datetime.now().year))
+    print("PARAMETERS", id, request.user.industry, request.user.tenant.id, datetime.now().year)
+    report_rows = []
+    for ans in answers:
+        report_rows.append([ans.question.question, ans.value, ans.comment, ans.status])
+    if report_rows == []:
+        return FileResponse(open('static/error.csv', 'rb'), as_attachment=True, content_type='application/pdf')
+    else:
+        try:
+            import pandas
+            df = pandas.DataFrame(report_rows, columns=["Question", "Answer", "Comment", "Status"])
+            df.to_csv("static/report.csv")
+            return FileResponse(open('static/report.csv', 'rb'), as_attachment=True, content_type='application/pdf')
+        except Exception as e:
+            print("ERROR ", e)
+            return FileResponse(open('static/error.csv', 'rb'), as_attachment=True, content_type='application/pdf')
+
 
 
 @login_required(login_url="/user-login")
@@ -1178,101 +1217,125 @@ def report(request):
     # social_count = QuestionCategoryMapping.objects.filter(cate__sub_category__name__contains="Social").count()
     # governance_count = QuestionCategoryMapping.objects.filter(cate__sub_category__name__contains="Governance").count()
     # data = {'basic_data':basic_data_count,'environmental':environmental_count,'social':social_count,'governance':governance_count}
-    data = {}
     from datetime import date
-    todays_date = date.today()
-    current_year = todays_date.year
-    print(current_year)
-    form = StatusForm1(initial=request.session.get('data_status_form_1'))
-    # answers = Answer.objects.filter(
-    #     get_answers_per_year_goal(req_category, req_framework, req_subcategory, request.user.tenant.id, req_year,
-    #                               request.user.industry)).order_by('question')
-    data['form'] = form
+    # todays_date = date.today()
+    # current_year = todays_date.year
+    # print(current_year)
+    # form = StatusForm1(initial=request.session.get('data_status_form_1'))
+    # # answers = Answer.objects.filter(
+    # #     get_answers_per_year_goal(req_category, req_framework, req_subcategory, request.user.tenant.id, req_year,
+    # #                               request.user.industry)).order_by('question')
+    # data['form'] = form
+    #
+    # if request.method == 'POST':
+    #     data_status_form = StatusForm1(request.POST)
+    #     if data_status_form.is_valid():
+    #         if data_status_form.cleaned_data['framework'] is None:
+    #             filter_options = request.session.get('data_status_form_1')
+    #         else:
+    #             # Stroing Session if filter form is valid
+    #             try:
+    #                 filter_options = data_status_form.cleaned_data
+    #                 filter_options['framework'] = filter_options['framework'].id
+    #                 filter_options['category'] = filter_options['category'].id
+    #                 filter_options['sub_category'] = filter_options['sub_category'].id
+    #
+    #                 print(filter_options)
+    #                 # filter_options['removegoal'] = filter_options['removegoal']
+    #
+    #                 request.session['data_status_form_1'] = filter_options
+    #                 print('Current Data status Form session: ', request.session.get('data_status_form_1'))
+    #             except Exception as e:
+    #                 print("INTO EXCEPTION------>", e)
+    #                 messages.warning(request, f'Select Valid Options..')
+    #                 filter_options = request.session.get('data_status_form')
+    #             ###############################################################################
+    #         req_framework = filter_options.get('framework')
+    #         req_category = filter_options.get('category')
+    #         req_subcategory = filter_options.get('sub_category')
+    #         req_year = filter_options.get('year')
+    #         print('Data status filter for ', req_year)
+    #         answers = Answer.objects.filter(
+    #             get_answers_per_year_report(req_category, req_framework, req_subcategory, request.user.tenant.id,
+    #                                       req_year,
+    #                                       request.user.industry)).order_by('question')
+    #     report_list = []
+    #     for answer in answers:
+    #         #report_list.append({"question": answer.question.question, "answer": answer.value})
+    #         report_list.append([answer.question.question, answer.value,answer.comment])
+    #         print("answer------>",answer.question.id)
+    #     print(report_list)
+    #
+    #     try:
+    #         import pandas
+    #         df = pandas.DataFrame(report_list, columns=["Question", "Answer", "Comment"])
+    #         df.to_csv("static/report.csv")
+    #         # pdf = FPDF('P', 'mm', 'A4')
+    #         # pdf.add_page()
+    #         # pdf.set_font('courier', 'B', 16)
+    #         # pdf.cell(40, 10, 'REPORT For Current year:', 0, 1)
+    #         # pdf.cell(40, 10, '', 0, 1)
+    #         # pdf.set_font('courier', '', 12)
+    #         # pdf.cell(200, 8, f"{'Item'.ljust(30)} {'Amount'.rjust(20)}", 0, 1)
+    #         # pdf.line(10, 30, 150, 30)
+    #         # pdf.line(10, 38, 150, 38)
+    #         #
+    #         # # for line in report_list:
+    #         # #     #pdf.cell(200, 8, f"{line['item'].ljust(30)} {line['amount'].rjust(20)}", 0, 1)
+    #         # #     pdf.cell(200,8, f"{line['question'].ljust(30)} {line['answer'].rjust(20)}" )
+    #         #
+    #         # th = pdf.font_size
+    #         # epw = pdf.w - 2 * pdf.l_margin
+    #         # col_width = epw
+    #         # pdf.ln(4 * th)
+    #         #
+    #         # pdf.set_font('Times', 'B', 14.0)
+    #         # pdf.cell(epw, 0.0, 'With more padding', align='C')
+    #         # pdf.set_font('Times', '', 10.0)
+    #         # pdf.ln(0.5)
+    #         #
+    #         # for row in report_list:
+    #         #     for datum in row:
+    #         #         # Enter data in colums
+    #         #         pdf.cell(col_width, 2 * th, str(datum), border=1)
+    #         #         #pdf.cell(2.0, 0.15, str(datum), align='C', border=1)  ## width = 2.0
+    #         #     pdf.ln(2 * th)
+    #
+    #         #pdf.output('report.pdf', 'F')
+    #         return FileResponse(open('static/report.csv', 'rb'), as_attachment=True, content_type='application/pdf')
+    #
+    #     except Exception as e:
+    #         print("ERROR ---->", e)
+    #         data["message"] = "Cannot Generate report"
+    #
+    #     data['questions'] = answers
+    #     data['form'] = data_status_form
+    #     return render(request, 'users/goals_kpi.html', data)
+    framework, questionCount, answerCount, framework_id = progressPerFrameworkReport(request.user.tenant.id, datetime.now().year,
+                                                                 get_user_language(request))
+    frameworkProgressResults = []
+    frameworkProgressResultsText = []
+    frameworkProgressResultsNum = []
+    for i in range(len(framework)):
+        res = round(answerCount[i] / questionCount[i], 2)
+        frameworkProgressResults.append(res)
+        frameworkProgressResultsText.append('{}/{} = {}'.format(answerCount[i], questionCount[i], res))
 
-    if request.method == 'POST':
-        data_status_form = StatusForm1(request.POST)
-        if data_status_form.is_valid():
-            if data_status_form.cleaned_data['framework'] is None:
-                filter_options = request.session.get('data_status_form_1')
-            else:
-                # Stroing Session if filter form is valid
-                try:
-                    filter_options = data_status_form.cleaned_data
-                    filter_options['framework'] = filter_options['framework'].id
-                    filter_options['category'] = filter_options['category'].id
-                    filter_options['sub_category'] = filter_options['sub_category'].id
+    for i in frameworkProgressResultsText:  # splitting text progress values
+        temp = i.split(" ")
+        temp = temp[0].split("/")
+        frameworkProgressResultsNum.append(
+            {"current": int(temp[0]) * 100 / int(temp[1])})
 
-                    print(filter_options)
-                    # filter_options['removegoal'] = filter_options['removegoal']
+    framework_id = []
+    for i in framework:
+        pass
+        framework_query = Category.objects.get(name=i, type='framework', language=get_user_language(request))
+        framework_id.append(framework_query.id)
 
-                    request.session['data_status_form_1'] = filter_options
-                    print('Current Data status Form session: ', request.session.get('data_status_form_1'))
-                except Exception as e:
-                    print("INTO EXCEPTION------>", e)
-                    messages.warning(request, f'Select Valid Options..')
-                    filter_options = request.session.get('data_status_form')
-                ###############################################################################
-            req_framework = filter_options.get('framework')
-            req_category = filter_options.get('category')
-            req_subcategory = filter_options.get('sub_category')
-            req_year = filter_options.get('year')
-            print('Data status filter for ', req_year)
-            answers = Answer.objects.filter(
-                get_answers_per_year_report(req_category, req_framework, req_subcategory, request.user.tenant.id,
-                                          req_year,
-                                          request.user.industry)).order_by('question')
-        report_list = []
-        for answer in answers:
-            #report_list.append({"question": answer.question.question, "answer": answer.value})
-            report_list.append([answer.question.question, answer.value,answer.comment])
-            print("answer------>",answer.question.id)
-        print(report_list)
+    data = {'frameworks': zip(framework, frameworkProgressResultsText, frameworkProgressResultsNum, framework_id)}
 
-        try:
-            import pandas
-            df = pandas.DataFrame(report_list, columns=["Question", "Answer", "Comment"])
-            df.to_csv("static/report.csv")
-            # pdf = FPDF('P', 'mm', 'A4')
-            # pdf.add_page()
-            # pdf.set_font('courier', 'B', 16)
-            # pdf.cell(40, 10, 'REPORT For Current year:', 0, 1)
-            # pdf.cell(40, 10, '', 0, 1)
-            # pdf.set_font('courier', '', 12)
-            # pdf.cell(200, 8, f"{'Item'.ljust(30)} {'Amount'.rjust(20)}", 0, 1)
-            # pdf.line(10, 30, 150, 30)
-            # pdf.line(10, 38, 150, 38)
-            #
-            # # for line in report_list:
-            # #     #pdf.cell(200, 8, f"{line['item'].ljust(30)} {line['amount'].rjust(20)}", 0, 1)
-            # #     pdf.cell(200,8, f"{line['question'].ljust(30)} {line['answer'].rjust(20)}" )
-            #
-            # th = pdf.font_size
-            # epw = pdf.w - 2 * pdf.l_margin
-            # col_width = epw
-            # pdf.ln(4 * th)
-            #
-            # pdf.set_font('Times', 'B', 14.0)
-            # pdf.cell(epw, 0.0, 'With more padding', align='C')
-            # pdf.set_font('Times', '', 10.0)
-            # pdf.ln(0.5)
-            #
-            # for row in report_list:
-            #     for datum in row:
-            #         # Enter data in colums
-            #         pdf.cell(col_width, 2 * th, str(datum), border=1)
-            #         #pdf.cell(2.0, 0.15, str(datum), align='C', border=1)  ## width = 2.0
-            #     pdf.ln(2 * th)
 
-            #pdf.output('report.pdf', 'F')
-            return FileResponse(open('static/report.csv', 'rb'), as_attachment=True, content_type='application/pdf')
-
-        except Exception as e:
-            print("ERROR ---->", e)
-            data["message"] = "Cannot Generate report"
-
-        data['questions'] = answers
-        data['form'] = data_status_form
-        return render(request, 'users/goals_kpi.html', data)
     return render(request,'users/report.html',data)
 
 @login_required(login_url="/user-login")
@@ -1504,6 +1567,7 @@ def progressPerFramework(org_id,year,user_language):
         cursor.execute(query1)
         data = cursor.fetchall()
         for i in data:
+
             framework.append(i[0])
             questionCount.append(int(i[1]))
         cursor.execute(query2)
@@ -1517,6 +1581,60 @@ def progressPerFramework(org_id,year,user_language):
         else:
             answerCount.append(0)
     return framework,questionCount,answerCount
+
+def progressPerFrameworkReport(org_id,year,user_language):
+    query1='''
+        select b.name,a.totalquestions from
+            (select framework_id,count(*) totalquestions from 
+            (select * from questions_categorymapping a 
+            inner join 
+            ( select * from questions_questioncategorymapping ) b
+            on a.id = b.cate_id) b
+            group by framework_id) a
+            inner join
+            (select name,id from questions_category where type='framework' and language='{}') b
+            on a.framework_id = b.id 
+    '''.format(user_language)
+    query2='''    select b.name,a.totalquestions from
+    (select framework_id,count(*) totalquestions from 
+    (select * from questions_categorymapping a 
+    inner join 
+    ( 
+    select * from questions_questioncategorymapping a
+    inner join 
+    ( select question_id from questions_answer where organisation_id={} and year = {}) b
+        on b.question_id = a.ques_map_id 
+    ) b
+    on a.id = b.cate_id) b
+    group by framework_id) a
+    inner join
+    (select name,id from questions_category where type='framework' and language='{}') b
+    on a.framework_id = b.id'''.format(org_id,year,user_language)
+
+    framework=[]
+    questionCount=[]
+    answerCount=[]
+    framework_id = []
+    answer_count = dict()
+    with connection.cursor() as cursor:
+        cursor.execute(query1)
+        data = cursor.fetchall()
+        for i in data:
+
+            framework_id.append(i[1])
+            framework.append(i[0])
+            questionCount.append(int(i[1]))
+        cursor.execute(query2)
+        data = cursor.fetchall()
+        for i in data:
+            answer_count[i[0]]=int(i[1])
+
+    for i in framework:
+        if i in answer_count:
+            answerCount.append(answer_count[i])
+        else:
+            answerCount.append(0)
+    return framework,questionCount,answerCount, framework_id
 
 
 

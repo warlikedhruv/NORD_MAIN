@@ -1,3 +1,5 @@
-,Question,Answer,Comment
-0,Energy consumption within the organization - 1,answer here,comment of answer
-1,Energy consumption within the organization - 3,My answer is this,My comments are this
+,Question,Answer,Comment,Status
+0,Energy consumption within the organization - 1,answer here,comment of answer,OK
+1,Energy consumption within the organization - 3,My answer is this,My comments are this,OK
+2,Energy consumption within the organization - 2,I won't give an answer,Read the answer,OK
+3,Energy consumption within the organization - 2,,,OK

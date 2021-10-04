@@ -39,5 +39,5 @@ urlpatterns = [
          views.changeLanguage, name='change_language'),
     path(r'^changelanguagelogin/<str:ln>/$',
          views.changeLanguageLogin, name='change_language_login'),
-
+    path('downloadreport/<int:id>', views.download_report, name='download_report')
 ]

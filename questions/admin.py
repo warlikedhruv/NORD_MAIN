@@ -11,7 +11,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 class CategoryAdmin(admin.ModelAdmin):
     search_fields=('name',)
-    list_display=['name','type','language']
+    list_display=['name','type','language','id']
     list_filter=['type']
 
 class CategoryMappingAdmin(admin.ModelAdmin):
