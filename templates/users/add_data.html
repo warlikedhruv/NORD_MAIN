@@ -141,7 +141,6 @@
       var valueSelected = optionSelected.val();
       var name = optionSelected.text();
       data = { name: name, id_value: valueSelected };
-      console.log(data);
       $("div.spanner").toggleClass("show");
 
       $.ajax({
@@ -166,7 +165,6 @@
       var optionSelected = $(this).find("option:selected");
       var FrameworkSelected = $("#id_framework").find("option:selected");
       var valueSelected = optionSelected.val();
-      console.log("---->",valueSelected);
       var name = optionSelected.text();
       data = { framework:FrameworkSelected.val(),name: name, id_value: valueSelected };
       console.log(data);
@@ -219,10 +217,10 @@
       });
     } else {
       $("#id_sub_category").attr("disabled", "disabled");
+      console.log("Loading sub-category dropdown based on category using script: No category selected");
     }
     // -----
     var optionSelected = $("#id_framework").find("option:selected");
-    console.log(optionSelected);
     var valueSelected = optionSelected.val();
     var name = optionSelected.text();
     if (valueSelected) {
@@ -246,7 +244,44 @@
       });
     } else {
       $("#id_category").attr("disabled", "disabled");
+      console.log("Loading category dropdown based on framework using script: No framework selected");
     }
+  });
+
+  $(document).ready(()=>{
+    $(".language-option").click(function () {
+      var language = this.id;
+      var lan = 'en';
+      // data = { name: name, id_value: valueSelected };
+      var pathname = window.location.pathname;
+      console.log(pathname);
+
+      if(language == 'English'){
+        pathname = pathname.replace('/de/', '/en/')
+        lan = 'en';
+      }else if(language == 'Deutsch'){
+        pathname = pathname.replace('/en/', '/de/')
+        lan = 'de';
+      }
+
+      var temp = window.location.href;
+      temp = temp.replace(window.location.pathname, "/en/changelanguage/"+lan);
+      console.log(temp);
+
+      $.ajax({
+        type: "get",
+        url: temp, // 
+        success: function (result) {
+          console.log("language changed");
+        },
+        error: function(e){
+          console.log("error"+e);
+        }
+      });
+
+      console.log(pathname);
+      // window.location.pathname = pathname;
+    });
   });
 </script>
 {% endblock content %}

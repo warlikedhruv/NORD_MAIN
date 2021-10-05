@@ -44,6 +44,7 @@ from fpdf import FPDF
 import io
 from django.http import FileResponse
 from reportlab.pdfgen import canvas
+from django.conf import settings
 # Create your views here.
 def password_reset(request):
     if request.method == "POST":
@@ -764,7 +765,7 @@ def get_questions(category_id,framework_id,subcategory_id,org_id,industry):
 
 @login_required(login_url="/user-login")
 def add_data(request):
-    print('Choosen Language...................',get_user_language(request))
+    print('Inside add_data=>Chosen language..............',get_user_language(request),request.method)
     if request.method == 'POST':
         filter_form = AddDataForm(request.POST)
         questionForm = QuestionAnswerForm(request.POST)
@@ -830,7 +831,7 @@ def add_data(request):
                 print(questionForm.errors)
                 return redirect('add-data')
     else:
-        print('Current Filter Form session: ',request.session.get('filter_form'))
+        print('(get request)Current Filter Form session: ',request.session.get('filter_form'))
         form = AddDataForm(initial=request.session.get('filter_form'))
         questionForm = QuestionAnswerForm()
         question_filter_data = request.session.get('filter_form')
@@ -1497,15 +1498,17 @@ def save_single_answer(request,id):
 
 @login_required(login_url="/user-login")
 def getcategories(request):
+    lang = settings.LANGUAGE_CODE
     print('Choosen Language...................',get_user_language(request))
-    print('Getting Categories..',request.GET)
+    print('Inside getcategories: Getting Categories..',request.GET)
     #print(request.GET['cnt'],request.GET['id_value'])
     framework_id = request.GET['id_value']
     print('raju..',framework_id,get_user_language(request))
-    categories = CategoryMapping.objects.filter(Q(framework=framework_id))
+    categories = CategoryMapping.objects.filter(framework=framework_id)
     result_set=[]
     print(categories)
     for c in categories:
+        print("===========>",c)
         print(c.category.name,c.category.id)
         if {'name': c.category.name,'id':c.category.id} not in result_set:
             result_set.append({'name': c.category.name,'id':c.category.id})
@@ -1676,37 +1679,39 @@ def changeLanguage(request, ln):
     print("------"+ln)
     from django.conf import settings
     
-    if ln == 'en':
-        from django.utils import translation
-        user_language = 'en'
-        translation.activate(user_language)
-    elif ln == 'de':
-        from django.utils import translation
-        user_language = 'de'
-        translation.activate(user_language)
-    print("earlier-->", settings.LANGUAGE_CODE)
-    settings.LANGUAGE_CODE = ln
-    print("AFTER-->", settings.LANGUAGE_CODE)
-    request.session['user_language'] = user_language
+    # if ln == 'en':
+    #     from django.utils import translation
+    #     user_language = 'en'
+    #     translation.activate(user_language)
+    # elif ln == 'de':
+    #     from django.utils import translation
+    #     user_language = 'de'
+    #     translation.activate(user_language)
+    # print("earlier-->", settings.LANGUAGE_CODE)
+    # settings.LANGUAGE_CODE = ln
+    # print("AFTER-->", settings.LANGUAGE_CODE)
+    # request.session['user_language'] = user_language
+    request.session['user_language'] = ln
     return redirect('dashboard')
 
 def changeLanguageLogin(request, ln):
     from django.conf import settings
 
-    if ln == 'en':
-        from django.utils import translation
-        user_language = 'en'
-        translation.activate(user_language)
-        # settings.LANGUAGE_CODE = 'en'
-    elif ln == 'de':
-        from django.utils import translation
-        user_language = 'de'
-        # settings.LANGUAGE_CODE = 'de'
-        translation.activate(user_language)
-    print("earlier-->",settings.LANGUAGE_CODE)
-    settings.LANGUAGE_CODE = ln
-    print("AFTER-->",settings.LANGUAGE_CODE)
+    # if ln == 'en':
+    #     from django.utils import translation
+    #     user_language = 'en'
+    #     translation.activate(user_language)
+    #     # settings.LANGUAGE_CODE = 'en'
+    # elif ln == 'de':
+    #     from django.utils import translation
+    #     user_language = 'de'
+    #     # settings.LANGUAGE_CODE = 'de'
+    #     translation.activate(user_language)
+    # print("earlier-->",settings.LANGUAGE_CODE)
+    # settings.LANGUAGE_CODE = ln
+    # print("AFTER-->",settings.LANGUAGE_CODE)
 
-    request.session['user_language'] = user_language
+    # request.session['user_language'] = user_language
+    print("change language function called!!!")
     return redirect('user-login')
 

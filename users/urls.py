@@ -35,7 +35,7 @@ urlpatterns = [
          views.save_optional_answer, name='save_optional_answer'),
     path('single_answer_attempt/<int:id>/',
          views.single_answer_attempt, name='single_answer_attempt'),
-    path(r'^changelanguage/<str:ln>/$',
+    path('changelanguage/<str:ln>/',
          views.changeLanguage, name='change_language'),
     path(r'^changelanguagelogin/<str:ln>/$',
          views.changeLanguageLogin, name='change_language_login'),

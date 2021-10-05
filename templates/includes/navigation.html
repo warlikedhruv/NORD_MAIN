@@ -9,8 +9,6 @@
             {% get_available_languages as LANGUAGES %}
             {% get_language_info_list for LANGUAGES as languages %}
 
-            
-
             <div class="dropdown btn-group" style="background-color:transparent">
               <a class="btn dropdown-toggle" style="color:white" data-toggle="dropdown" href="#">
                 {% if LANGUAGE_CODE == "en" %}
@@ -21,13 +19,10 @@
                   Language <i class="fas fa-language"></i><span class="caret"></span>
                 {% endif %}
               </a>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu" id="temporary">
                 {% for language in languages %}
-                <li style="text-align: center;padding:.25rem">
-                  <a href="{% url 'change_language' ln=language.code %}" style="color:black;">
-                    <!-- <option value="{{ language.code }}" -->
-                        <!-- {% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}> -->
-                        {{ language.name_local }} {% if language.name_local == "English" %}
+                <li class="language-option" id="{{ language.name_local }}" style="text-align: center;padding:.25rem">
+                  {{ language.name_local }} {% if language.name_local == "English" %}
                   <img src="/static/assets/img/icons/common/uk.png" width="fit-content" height="15" alt="NordESG Logo"><span class="caret"></span>
                 {% elif language.name_local == "Deutsch" %}
                   <img src="/static/assets/img/icons/common/germany.svg" width="fit-content" height="12" alt="NordESG Logo"></i><span class="caret"></span>
@@ -35,7 +30,6 @@
                   <i class="fas fa-language"></i><span class="caret"></span>
                 {% endif %}
                     <!-- </option> -->
-                  </a>
                 </li>
                 {% endfor %}
               </ul>

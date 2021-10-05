@@ -7,6 +7,7 @@ from questions.models import *
 from languages.models import *
 from django.contrib.auth.forms import PasswordResetForm
 import datetime
+from django.conf import settings
 
 
 def get_languages():
@@ -16,13 +17,19 @@ def get_organisations():
     return Tenant.objects.all().order_by('id')
 
 def get_frameworks():
-    return  Category.objects.filter(type='framework').order_by('id')
+    lang = settings.LANGUAGE_CODE.upper()
+    print("==============>Lang:",lang)
+    return Category.objects.filter(type='framework', language=lang).order_by('id')
 
 def get_categories():
-    return Category.objects.filter(type='category').order_by('id')
+    lang = settings.LANGUAGE_CODE.upper()
+    print("==============>Lang:",lang)
+    return Category.objects.filter(type='category', language=lang).order_by('id')
 
 def get_subcategories():
-    return Category.objects.filter(type='sub_category').order_by('id')
+    lang = settings.LANGUAGE_CODE.upper()
+    print("==============>Lang:", lang)
+    return Category.objects.filter(type='sub_category', language=lang).order_by('id')
 
 class DivErrorList(ErrorList):
     def __str__(self):
@@ -172,9 +179,14 @@ status_dropdown = [
     ('Not Applicable','Not Applicable')
 ]
 class AddDataForm(forms.Form):
-    query_framework = Category.objects.filter(type='framework')
-    query_category = Category.objects.filter(type='category')
-    query_sub_category = Category.objects.filter(type='sub_category')
+    lang = settings.LANGUAGE_CODE.upper()
+    query_framework = Category.objects.filter(type='framework', language=lang)
+    # print("Query_framework:----------", query_framework)
+    # print("Language in forms.py:-------------",lang)
+    query_category = Category.objects.filter(type='category', language=lang)
+    # print("Query_category:----------- ", query_category)
+    query_sub_category = Category.objects.filter(type='sub_category', language=lang)
+    # print("Query_sub_category:-------- ", query_sub_category)
     framework = forms.ModelChoiceField(queryset=query_framework,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left'}), required=False)
     category = forms.ModelChoiceField(queryset=query_category,widget=forms.Select(
@@ -184,9 +196,9 @@ class AddDataForm(forms.Form):
     year = forms.ChoiceField(choices = year_dropdown, initial=datetime.datetime.now().year,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text', 'style':'float:left'}), required = False)
 
-    def __init__(self, *args, **kwargs):
-        super(AddDataForm, self).__init__(*args, **kwargs)
-        self.fields['framework'].queryset = get_frameworks()
+    # def __init__(self, *args, **kwargs):
+    #     super(AddDataForm, self).__init__(*args, **kwargs)
+    #     self.fields['framework'].queryset = get_frameworks()
  
 
 class StatusForm(forms.Form):
