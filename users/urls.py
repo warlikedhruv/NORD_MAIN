@@ -29,6 +29,7 @@ urlpatterns = [
     path('todos/', views.todos, name='todos'),
     path('goals-kpi/', views.goals_and_kpi, name='goals-kpi'),
     path('remove-goals/<int:goal_id>', views.remove_goal, name='remove-goal'),
+    path('getframeworks/', views.getframeworks, name='getframeworks'),
     path('getcategories/', views.getcategories, name='getcategories'),
     path('getsubcategories/', views.getsubcategories, name='getsubcategories'),
     path('save_optional_answer/<int:id>/',
@@ -37,7 +38,7 @@ urlpatterns = [
          views.single_answer_attempt, name='single_answer_attempt'),
     path('changelanguage/<str:ln>/',
          views.changeLanguage, name='change_language'),
-    path(r'^changelanguagelogin/<str:ln>/$',
+    path('changelanguagelogin/<str:ln>/',
          views.changeLanguageLogin, name='change_language_login'),
     path('downloadreport/<int:id>', views.download_report, name='download_report')
 ]

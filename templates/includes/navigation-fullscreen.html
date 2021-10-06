@@ -23,7 +23,7 @@
             {% get_available_languages as LANGUAGES %}
             {% get_language_info_list for LANGUAGES as languages %}
 
-            
+
 
             <div class="dropdown btn-group mt-1" style="background-color:transparent">
               <a class="btn dropdown-toggle" style="color:white" data-toggle="dropdown" href="#">
@@ -37,7 +37,7 @@
               </a>
               <ul class="dropdown-menu">
                 {% for language in languages %}
-                <li style="text-align: center;padding:.25rem">
+                <li class="language-option" id="{{ language.name_local }}" style="text-align: center;padding:.25rem">
                   <a href="{% url 'change_language_login' ln=language.code %}" style="color:black;">
                     <!-- <option value="{{ language.code }}" -->
                         <!-- {% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}> -->
@@ -63,4 +63,7 @@
             </li>
         </ul>
       </div>
+      </div>
     </nav>
+
+

@@ -10,24 +10,25 @@ import datetime
 from django.conf import settings
 
 
+language = ""
 def get_languages():
     return Language.objects.all().order_by('id')
 
 def get_organisations():
     return Tenant.objects.all().order_by('id')
 
-def get_frameworks():
-    lang = settings.LANGUAGE_CODE.upper()
+def get_frameworks(lang):
+    # lang = settings.LANGUAGE_CODE.upper()
     print("==============>Lang:",lang)
     return Category.objects.filter(type='framework', language=lang).order_by('id')
 
-def get_categories():
+def get_categories(lang):
     lang = settings.LANGUAGE_CODE.upper()
     print("==============>Lang:",lang)
     return Category.objects.filter(type='category', language=lang).order_by('id')
 
-def get_subcategories():
-    lang = settings.LANGUAGE_CODE.upper()
+def get_subcategories(lang):
+    #lang = settings.LANGUAGE_CODE.upper()
     print("==============>Lang:", lang)
     return Category.objects.filter(type='sub_category', language=lang).order_by('id')
 
@@ -179,14 +180,14 @@ status_dropdown = [
     ('Not Applicable','Not Applicable')
 ]
 class AddDataForm(forms.Form):
-    lang = settings.LANGUAGE_CODE.upper()
-    query_framework = Category.objects.filter(type='framework', language=lang)
+
+    query_framework = Category.objects.filter(type='framework')
     # print("Query_framework:----------", query_framework)
     # print("Language in forms.py:-------------",lang)
-    query_category = Category.objects.filter(type='category', language=lang)
+    query_category = Category.objects.filter(type='category')
     # print("Query_category:----------- ", query_category)
-    query_sub_category = Category.objects.filter(type='sub_category', language=lang)
-    # print("Query_sub_category:-------- ", query_sub_category)
+    query_sub_category = Category.objects.filter(type='sub_category')
+    print("Query_sub_category:-------- ", query_sub_category)
     framework = forms.ModelChoiceField(queryset=query_framework,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left'}), required=False)
     category = forms.ModelChoiceField(queryset=query_category,widget=forms.Select(
@@ -199,7 +200,28 @@ class AddDataForm(forms.Form):
     # def __init__(self, *args, **kwargs):
     #     super(AddDataForm, self).__init__(*args, **kwargs)
     #     self.fields['framework'].queryset = get_frameworks()
- 
+    def __init__(self, *args, request=None, **kwargs):
+        super(AddDataForm, self).__init__(*args, **kwargs)
+        self.request = request  # perhaps you want to set the request in the Form
+        if request is not None:
+            self.lang = request.session['user_language']
+            self.fields['framework'].queryset = get_frameworks(self.lang.upper())
+            # query_framework = Category.objects.filter(type='framework', language=self.lang.upper())
+            # # print("Query_framework:----------", query_framework)
+            # # print("Language in forms.py:-------------",lang)
+            # query_category = Category.objects.filter(type='category', language=self.lang)
+            # # print("Query_category:----------- ", query_category)
+            # query_sub_category = Category.objects.filter(type='sub_category', language=self.lang)
+            # framework = forms.ModelChoiceField(queryset=query_framework, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+            # category = forms.ModelChoiceField(queryset=query_category, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+            # sub_category = forms.ModelChoiceField(queryset=query_sub_category, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left', 'maxlength': '12'}),
+            #                                       required=False)
+            # year = forms.ChoiceField(choices=year_dropdown, initial=datetime.datetime.now().year, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+
 
 class StatusForm(forms.Form):
     query_framework = Category.objects.filter(type='framework')
@@ -211,6 +233,14 @@ class StatusForm(forms.Form):
         attrs={'class': 'form-control', 'type': 'text','style':'float:left'}),required=False)
     sub_category = forms.ModelChoiceField(queryset=query_sub_category,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left','maxlength':'12'}), required=False)
+    def __init__(self, *args, request=None, **kwargs):
+        super(StatusForm, self).__init__(*args, **kwargs)
+        self.request = request  # perhaps you want to set the request in the Form
+        if request is not None:
+            self.lang = request.session['user_language']
+            self.fields['framework'].queryset = get_frameworks(self.lang.upper())
+
+
 
 class StatusForm1(forms.Form):
     query_framework = Category.objects.filter(type='framework')
@@ -224,6 +254,14 @@ class StatusForm1(forms.Form):
         attrs={'class': 'form-control', 'type': 'text', 'maxlength': '12'}), required=False)
     year = forms.ChoiceField(choices=year_dropdown, initial=datetime.datetime.now().year, widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text'}), required=False)
+
+    def __init__(self, *args, request=None, **kwargs):
+        super(StatusForm1, self).__init__(*args, **kwargs)
+        self.request = request  # perhaps you want to set the request in the Form
+        if request is not None:
+            self.lang = request.session['user_language']
+            self.fields['framework'].queryset = get_frameworks(self.lang.upper())
+
 
 
 
@@ -242,6 +280,28 @@ class DataStatusForm(forms.Form):
     status = forms.ChoiceField(choices = status_dropdown, initial=status_dropdown[0][0] ,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text'}), required = False)
 
+    def __init__(self, *args, request=None, **kwargs):
+        super(DataStatusForm, self).__init__(*args, **kwargs)
+        self.request = request  # perhaps you want to set the request in the Form
+        if request is not None:
+            self.lang = request.session['user_language']
+            self.fields['framework'].queryset = get_frameworks(self.lang.upper())
+            # query_framework = Category.objects.filter(type='framework', language=self.lang.upper())
+            # # print("Query_framework:----------", query_framework)
+            # # print("Language in forms.py:-------------",lang)
+            # query_category = Category.objects.filter(type='category', language=self.lang)
+            # # print("Query_category:----------- ", query_category)
+            # query_sub_category = Category.objects.filter(type='sub_category', language=self.lang)
+            # framework = forms.ModelChoiceField(queryset=query_framework, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+            # category = forms.ModelChoiceField(queryset=query_category, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+            # sub_category = forms.ModelChoiceField(queryset=query_sub_category, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left', 'maxlength': '12'}),
+            #                                       required=False)
+            # year = forms.ChoiceField(choices=year_dropdown, initial=datetime.datetime.now().year, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+
 
 
 class TodoForm(forms.Form):
@@ -255,9 +315,48 @@ class TodoForm(forms.Form):
     sub_category = forms.ModelChoiceField(queryset=query_sub_category,widget=forms.Select(
         attrs={'class': 'form-control', 'type': 'text','style':'float:left','maxlength':'12'}), required=False)
 
+    def __init__(self, *args, request=None, **kwargs):
+        super(TodoForm, self).__init__(*args, **kwargs)
+        self.request = request  # perhaps you want to set the request in the Form
+        if request is not None:
+            self.lang = request.session['user_language']
+            self.fields['framework'].queryset = get_frameworks(self.lang.upper())
+
+
+
 class FrameworCategoryProgressForm(forms.Form):
+    lang = ""
     query_framework = Category.objects.filter(type='framework')
-    framework = forms.ModelChoiceField(queryset=query_framework,widget=forms.Select(
-        attrs={'class': 'form-control', 'type': 'text', 'style': 'padding-right:2rem;padding-left:2rem'}), required=False)
+    framework = forms.ModelChoiceField(queryset=query_framework, widget=forms.Select(
+        attrs={'class': 'form-control', 'type': 'text', 'style': 'padding-right:2rem;padding-left:2rem'}),
+        required=False)
+    #query_framework = Category.objects.filter(type='framework')
+    # framework = forms.ModelChoiceField(widget=forms.Select(
+    #     attrs={'class': 'form-control', 'type': 'text', 'style': 'padding-right:2rem;padding-left:2rem'}), required=False)
+    def __init__(self, *args, request=None, **kwargs):
+        super(FrameworCategoryProgressForm, self).__init__(*args, **kwargs)
+        self.request = request  # perhaps you want to set the request in the Form
+        if request is not None:
+            self.lang = request.session['user_language']
+            self.fields['framework'].queryset = Category.objects.filter(type='framework', language="DE")
+
+
+            #self.fields['framework'].queryset = get_frameworks(self.lang.upper())
+            # query_framework = Category.objects.filter(type='framework', language=self.lang.upper())
+            # # print("Query_framework:----------", query_framework)
+            # # print("Language in forms.py:-------------",lang)
+            # query_category = Category.objects.filter(type='category', language=self.lang)
+            # # print("Query_category:----------- ", query_category)
+            # query_sub_category = Category.objects.filter(type='sub_category', language=self.lang)
+            # framework = forms.ModelChoiceField(queryset=query_framework, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+            # category = forms.ModelChoiceField(queryset=query_category, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+            # sub_category = forms.ModelChoiceField(queryset=query_sub_category, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left', 'maxlength': '12'}),
+            #                                       required=False)
+            # year = forms.ChoiceField(choices=year_dropdown, initial=datetime.datetime.now().year, widget=forms.Select(
+            #     attrs={'class': 'form-control', 'type': 'text', 'style': 'float:left'}), required=False)
+
     
     # display:flex;justify-content:center;align-items:center

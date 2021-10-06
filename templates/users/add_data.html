@@ -156,6 +156,10 @@
           $("#id_category").removeAttr("disabled");
           $("#id_sub_category").attr('disabled','disabled');
         },
+        error: function(result){
+        $("div.spanner").removeClass("show");
+          $("#id_category").removeAttr("disabled");
+        },
       });
     });
   });
@@ -182,6 +186,10 @@
           $("div.spanner").toggleClass("show");
           $("#id_sub_category").removeAttr("disabled");
         },
+        error: function(result){
+        $("div.spanner").removeClass("show");
+          $("#id_category").removeAttr("disabled");
+        },
       });
     });
   });
@@ -207,12 +215,16 @@
           for (var i = result.length - 1; i >= 0; i--) {
             if (result[i].id == subValueSelected){
               $("#id_sub_category").append("<option selected value=" + result[i].id + ">" + result[i].name + "</option>");
-            }else{ 
+            }else{
               $("#id_sub_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
             }
           }
           // $("div.spanner").toggleClass("show");
           $("#id_sub_category").removeAttr("disabled");
+        },
+        error: function(result){
+        $("div.spanner").removeClass("show");
+          $("#id_sub_category").attr("disabled", "disabled");
         },
       });
     } else {
@@ -238,9 +250,15 @@
               $("#id_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
             }
           }
+
           $("div.spanner").removeClass("show");
           $("#id_category").removeAttr("disabled");
         },
+        error: function(result){
+        $("div.spanner").removeClass("show");
+
+        },
+
       });
     } else {
       $("#id_category").attr("disabled", "disabled");
@@ -270,17 +288,22 @@
 
       $.ajax({
         type: "get",
-        url: temp, // 
+        url: temp, //
         success: function (result) {
           console.log("language changed");
+          console.log(pathname);
+       pathname = pathname.replace('/add-data/', '/dashboard/');
+       window.location.pathname = pathname;
         },
         error: function(e){
           console.log("error"+e);
+          console.log(pathname);
+       pathname = pathname.replace('/add-data/', '/dashboard/');
+       window.location.pathname = pathname;
         }
       });
 
-      console.log(pathname);
-      // window.location.pathname = pathname;
+
     });
   });
 </script>

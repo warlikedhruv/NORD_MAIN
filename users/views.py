@@ -107,6 +107,8 @@ def user_login(request):
                         return redirect('admin-dashboard')
                     elif user.is_active:
                         login(request, user)
+                        if 'user_language' not in request.session.keys():
+                            request.session['user_language'] = 'en'
                         return redirect('dashboard')
                     else:
                         messages.error(request, 'An unknown error occurred. Please try again.')
@@ -123,6 +125,8 @@ def user_login(request):
                                "Something went wrong and we couldn't fetch some critical info. Please check your network connection or try again later.")
                 return redirect('login')
     else:
+        # if request.session['user']:
+        #     return redirect('dashboard')
         form = LoginForm()
     return render(request, 'users/login.html', {'form': form})
 
@@ -368,10 +372,11 @@ def users_detail(request):
 
 ######################################## User DashBoard Code ####################################
 def get_user_language(request):
-    if request.session.get('user_language') is None:
-        return 'EN'
-    else:
-        return request.session.get('user_language').upper()
+    try:
+        return request.session['user_language'].upper()
+    except Exception as e:
+        print("exception in get user language", e)
+        return 'en'.upper()
 
 
 def randomHex():
@@ -388,7 +393,7 @@ def user_dashboard(request):
     print('Choosen Language...................',get_user_language(request))
     from django.utils import translation
     if request.method == "POST":
-        categoryform = FrameworCategoryProgressForm(request.POST)
+        categoryform = FrameworCategoryProgressForm(request.POST, request=request)
         if categoryform.is_valid():
             if categoryform.cleaned_data['framework'] is None:
                 categoryformoptions = request.session.get('category_progress_form')
@@ -413,7 +418,7 @@ def user_dashboard(request):
                 temp = i.split(" ")
                 temp = temp[0].split("/")
                 category_resultsNum.append(
-                {"current": int(temp[0]) * 100 / int(temp[1])})
+                {"current": int(int(temp[0]) * 100 / int(temp[1]))})
             
 
             framework,questionCount,answerCount = progressPerFramework(request.user.tenant.id,datetime.now().year,get_user_language(request))
@@ -429,7 +434,7 @@ def user_dashboard(request):
                 temp = i.split(" ")
                 temp = temp[0].split("/")
                 frameworkProgressResultsNum.append(
-                {"current": int(temp[0]) * 100 / int(temp[1])})
+                {"current": int(int(temp[0]) * 100 / int(temp[1]))})
 
             org_users = Tenant.objects.all().get(id=request.user.tenant.id).tenant_1.all().exclude(email=request.user.email)
             chart_color=[ randomHex() for i in range(len(framework))]
@@ -442,7 +447,7 @@ def user_dashboard(request):
                     'frameworkProgressResults':frameworkProgressResults,
                     'chart_color':chart_color,
                     'chart_color2':chart_color2,
-                    'categoryform':FrameworCategoryProgressForm(initial=request.session.get('category_progress_form')),
+                    'categoryform':FrameworCategoryProgressForm(initial=request.session.get('category_progress_form'), request=request),
                     'categoryresults':zip(category,category_resultsText, category_resultsNum),
                     'categorys':category,
                     'categoryProgressResults':category_results
@@ -450,7 +455,7 @@ def user_dashboard(request):
 
     else:
         if request.session.get('category_progress_form')==None:
-            framework_id = Category.objects.filter(type='framework')[0].id
+            framework_id = Category.objects.filter(type='framework', language=request.session['user_language'].upper())[0].id
             pass
         else:
             framework_id = request.session.get('category_progress_form')['framework']
@@ -468,7 +473,7 @@ def user_dashboard(request):
         for i in category_resultsText: #splitting text progress values
             temp = i.split(" ")
             temp = temp[0].split("/")
-            category_resultsNum.append({"current": int(temp[0]) * 100 / int(temp[1])})
+            category_resultsNum.append({"current": int(int(temp[0]) * 100 / int(temp[1]))})
         print(category_resultsNum)
 
         framework,questionCount,answerCount = progressPerFramework(request.user.tenant.id,datetime.now().year,get_user_language(request))
@@ -484,7 +489,7 @@ def user_dashboard(request):
         for i in frameworkProgressResultsText: #splitting text progress values
             temp = i.split(" ")
             temp = temp[0].split("/")
-            frameworkProgressResultsNum.append({"current": int(temp[0]) * 100 / int(temp[1])})
+            frameworkProgressResultsNum.append({"current": int(int(temp[0]) * 100 / int(temp[1]))})
         print(frameworkProgressResultsNum)
 
         org_users = Tenant.objects.all().get(id=request.user.tenant.id).tenant_1.all().exclude(email=request.user.email)
@@ -504,7 +509,7 @@ def user_dashboard(request):
                 'frameworkProgressResults':frameworkProgressResults,
                 'chart_color':chart_color,
                 'chart_color2':chart_color2,
-                'categoryform':FrameworCategoryProgressForm(initial=request.session.get('category_progress_form')),
+                'categoryform':FrameworCategoryProgressForm(initial=request.session.get('category_progress_form'), request=request),
                 'categoryresults':zip(category,category_resultsText, category_resultsNum ),
                 'categorys':category,
                 'categoryProgressResults':category_results
@@ -767,7 +772,7 @@ def get_questions(category_id,framework_id,subcategory_id,org_id,industry):
 def add_data(request):
     print('Inside add_data=>Chosen language..............',get_user_language(request),request.method)
     if request.method == 'POST':
-        filter_form = AddDataForm(request.POST)
+        filter_form = AddDataForm(request.POST, request=request)
         questionForm = QuestionAnswerForm(request.POST)
         print(filter_form.is_valid(),questionForm.is_valid())
         #answer = QuestionAnswerForm(request.POST)
@@ -790,6 +795,7 @@ def add_data(request):
                     print("Error---->",e)
                     messages.warning(request, f'Select Valid Options..')
                     filter_options = request.session.get('filter_form')
+
                 ###############################################################################
 
             #Get Id's for category, framework, sub_category
@@ -799,10 +805,10 @@ def add_data(request):
             req_year = filter_options.get('year')
             #print('filter_data',req_category,req_framework,req_subcategory,req_year,request.user.tenant.id)
             questions = Answer.objects.filter(get_questions_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,request.user.industry)).order_by('question')
-            #print(questions)
+            print("FILTER FORM -----> ",request.session.get('filter_form'))
             data = {
                     'questions':questions,
-                    'form':AddDataForm(initial=request.session.get('filter_form')),
+                    'form':AddDataForm(initial=request.session.get('filter_form'), request=request),
                     'questionForm':questionForm
                     }
             print('Rendering Template')
@@ -832,8 +838,8 @@ def add_data(request):
                 return redirect('add-data')
     else:
         print('(get request)Current Filter Form session: ',request.session.get('filter_form'))
-        form = AddDataForm(initial=request.session.get('filter_form'))
-        questionForm = QuestionAnswerForm()
+        form = AddDataForm(initial=request.session.get('filter_form'), request=request)
+        questionForm = QuestionAnswerForm(request.POST)
         question_filter_data = request.session.get('filter_form')
         if question_filter_data!=None:
             req_category=question_filter_data['category']
@@ -854,9 +860,10 @@ def add_data(request):
 @login_required(login_url="/user-login")
 def data_status(request):
     if request.method == 'POST':
-        data_status_form = DataStatusForm(request.POST)
+        data_status_form = DataStatusForm(request.POST, request=request)
         if data_status_form.is_valid():
             if data_status_form.cleaned_data['framework'] is None:
+                print("THIS IS 2nd if statement")
                 filter_options = request.session.get('data_status_form')
             else:
                 # Stroing Session if filter form is valid
@@ -877,15 +884,18 @@ def data_status(request):
             req_subcategory = filter_options.get('sub_category')
             req_year = filter_options.get('year')
             req_status = filter_options.get('status')
+            request.session['data_status_form'] = filter_options
             print('Data status filter for ',req_year,req_status)
             answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry)).order_by('question')
             data={
-                'form':DataStatusForm(initial=request.session.get('data_status_form')),
+                'form':DataStatusForm(initial=request.session.get('data_status_form'), request=request),
                 'answers':answers
             }
+        else:
+            print("THIS FORM IN DATA STATUS IS NOT VALID")
     else:
         print('Current Data status Form session: ',request.session.get('data_status_form'))
-        form = DataStatusForm(initial=request.session.get('data_status_form'))
+        form = DataStatusForm(initial=request.session.get('data_status_form'), request=request)
         if request.session.get('data_status_form') is None:
             answers = []
         else:
@@ -1033,7 +1043,7 @@ def save_optional_answer(request,id):
 @login_required(login_url="/user-login")
 def review_data(request):
     if request.method == 'POST':
-        filter_form = StatusForm(request.POST)
+        filter_form = StatusForm(request.POST, request=request)
         if filter_form.is_valid():
             
             if filter_form.cleaned_data['framework'] is None:
@@ -1062,7 +1072,7 @@ def review_data(request):
             print(questions)
             data = {
                     'questions':questions,
-                    'form':StatusForm(initial=request.session.get('status_filter_form'))
+                    'form':StatusForm(initial=request.session.get('status_filter_form'), request=request)
                     }
             print('Rendering Template')
             return render(request,'users/review_data.html',data)
@@ -1087,7 +1097,7 @@ def review_data(request):
     else:
         print('Get Request')
         print('Current Filter Form session: ',request.session.get('status_filter_form'))
-        form = StatusForm(initial=request.session.get('status_filter_form'))
+        form = StatusForm(initial=request.session.get('status_filter_form'), request=request)
         question_filter_data = request.session.get('status_filter_form')
         if question_filter_data!=None:
             print('Get If Condition')
@@ -1147,16 +1157,17 @@ def display_data(request,id):
         }
     return render(request,'users/display_data.html',data)
 
-def get_answer_for_report(framework_id,industry,org_id,year):
+def get_answer_for_report(framework_id,industry,org_id,year, lang):
     print('Filter Data for {} year'.format(year))
+
     sql_query ='''
         select id from questions_answer 
         where question_id in
         (select ques_map_id from questions_questioncategorymapping
         where cate_id in (select id from questions_categorymapping where framework_id = {}))
-        and question_id in (select id from questions_question where industry = '{}')
-        and organisation_id = {} and year = {}
-            '''.format(framework_id,industry,org_id,year)
+        and question_id in (select id from questions_question where industry = '{}' and language = '{}')
+        and organisation_id = {} and year = {} 
+            '''.format(framework_id,industry,lang,org_id,year)
 
     with connection.cursor() as cursor:
         cursor.execute(sql_query)
@@ -1191,7 +1202,7 @@ def download_report(request,id):
     #
     # pdf.output('tuto1.pdf', 'F')
     print("download report")
-    answers = Answer.objects.filter(get_answer_for_report(framework_id=id, industry=request.user.industry, org_id=request.user.tenant.id, year=datetime.now().year))
+    answers = Answer.objects.filter(get_answer_for_report(lang= request.session['user_language'].upper(),framework_id=id, industry=request.user.industry, org_id=request.user.tenant.id, year=datetime.now().year))
     print("PARAMETERS", id, request.user.industry, request.user.tenant.id, datetime.now().year)
     report_rows = []
     for ans in answers:
@@ -1326,7 +1337,7 @@ def report(request):
         temp = i.split(" ")
         temp = temp[0].split("/")
         frameworkProgressResultsNum.append(
-            {"current": int(temp[0]) * 100 / int(temp[1])})
+            {"current": int(int(temp[0]) * 100 / int(temp[1]))})
 
     framework_id = []
     for i in framework:
@@ -1354,7 +1365,7 @@ def goals_and_kpi(request):
     #environmental_count = QuestionCategoryMapping.objects.filter(cate__sub_category__name__contains="Environmental").count()
     #social_count = QuestionCategoryMapping.objects.filter(cate__sub_category__name__contains="Social").count()
     #governance_count = QuestionCategoryMapping.objects.filter(cate__sub_category__name__contains="Governance").count()
-    form = StatusForm1(initial=request.session.get('data_status_form_1'))
+    form = StatusForm1(initial=request.session.get('data_status_form_1'), request=request)
     data = {'form':form}
     if request.session.get('data_status_form') is None:
         answers = []
@@ -1374,7 +1385,7 @@ def goals_and_kpi(request):
 
     #data = {'basic_data':basic_data_count,'environmental':environmental_count,'social':social_count,'governance':governance_count}
     if request.method == 'POST':
-        data_status_form = StatusForm1(request.POST)
+        data_status_form = StatusForm1(request.POST, request=request)
         if data_status_form.is_valid():
             if data_status_form.cleaned_data['framework'] is None:
                 filter_options = request.session.get('data_status_form_1')
@@ -1405,7 +1416,7 @@ def goals_and_kpi(request):
                 get_answers_per_year_goal(req_category, req_framework, req_subcategory, request.user.tenant.id, req_year,
                                       request.user.industry)).order_by('question')
 
-
+        print("answers ------>>", answers)
         data['questions'] = answers
         data['form'] = data_status_form
         return render(request, 'users/goals_kpi.html',data )
@@ -1414,7 +1425,8 @@ def goals_and_kpi(request):
 @login_required(login_url="/user-login")
 def todos(request):
     if request.method == 'POST':
-        todo_form = TodoForm(request.POST)
+
+        todo_form = TodoForm(request.POST, request=request)
         if todo_form.is_valid():
             if todo_form.cleaned_data['framework'] is None:
                 filter_options = request.session.get('todo_form')
@@ -1441,12 +1453,12 @@ def todos(request):
             answers = Answer.objects.filter(get_answers_per_year(req_category,req_framework,req_subcategory,request.user.tenant.id,req_year,req_status,request.user.industry)).order_by('question')
             print(answers)
             data={
-                'form':TodoForm(initial=request.session.get('todo_form')),
+                'form':TodoForm(initial=request.session.get('todo_form'), request=request),
                 'answers':answers
             }
     else:
         print('Current TODO status Form session: ',request.session.get('todo_form'))
-        todo_form = TodoForm(initial=request.session.get('todo_form'))
+        todo_form = TodoForm(initial=request.session.get('todo_form'), request=request)
         if request.session.get('todo_form') is None:
             answers = []
         else:
@@ -1497,8 +1509,19 @@ def save_single_answer(request,id):
         return redirect('todos')
 
 @login_required(login_url="/user-login")
+def getframeworks(request):
+    lang = request.session['user_language'].upper()
+    frameworks = Category.objects.filter(type='framework', language=lang)
+    result_set = []
+    for c in frameworks:
+        print("This is frameworks - ",c, c.id)
+        #if {'name': c.category.name, 'id': c.category.id} not in result_set:
+        result_set.append({'name': c.name, 'id': c.id})
+    return HttpResponse(simplejson.dumps(result_set), content_type='application/json')
+
+@login_required(login_url="/user-login")
 def getcategories(request):
-    lang = settings.LANGUAGE_CODE
+    lang = request.session['user_language'].upper()
     print('Choosen Language...................',get_user_language(request))
     print('Inside getcategories: Getting Categories..',request.GET)
     #print(request.GET['cnt'],request.GET['id_value'])
@@ -1691,8 +1714,26 @@ def changeLanguage(request, ln):
     # settings.LANGUAGE_CODE = ln
     # print("AFTER-->", settings.LANGUAGE_CODE)
     # request.session['user_language'] = user_language
+    try:
+        for keys in request.session.keys():
+            if keys != 'user':
+                print("KEYS" , keys)
+        del request.session['data_status_form']
+        del request.session['data_status_form_1']
+        del request.session['filter_form']
+        del request.session['category_progress_form']
+        del request.session['category_progress_form']
+        del request.session['status_filter_form']
+        del request.session['todo_form']
+    except Exception as e:
+        pass
+    print("-----------------------------------------" )
     request.session['user_language'] = ln
+    print("----------------->",settings.LANGUAGE_CODE, request.session['user_language'])
+    print("-----------------------------------------")
+
     return redirect('dashboard')
+
 
 def changeLanguageLogin(request, ln):
     from django.conf import settings
@@ -1713,5 +1754,9 @@ def changeLanguageLogin(request, ln):
 
     # request.session['user_language'] = user_language
     print("change language function called!!!")
+    print("-----------------------------------------")
+    request.session['user_language'] = ln
+    print("----------------->", settings.LANGUAGE_CODE, request.session['user_language'])
+    print("-----------------------------------------")
     return redirect('user-login')
 

@@ -60,7 +60,6 @@
       var valueSelected = optionSelected.val();
       var name = optionSelected.text();
       data = { name: name, id_value: valueSelected };
-      console.log(data);
       $("div.spanner").toggleClass("show");
 
       $.ajax({
@@ -76,6 +75,10 @@
           $("#id_category").removeAttr("disabled");
           $("#id_sub_category").attr('disabled','disabled');
         },
+        error: function(result){
+        $("div.spanner").removeClass("show");
+          $("#id_category").removeAttr("disabled");
+        },
       });
     });
   });
@@ -85,7 +88,6 @@
       var optionSelected = $(this).find("option:selected");
       var FrameworkSelected = $("#id_framework").find("option:selected");
       var valueSelected = optionSelected.val();
-      console.log("---->",valueSelected);
       var name = optionSelected.text();
       data = { framework:FrameworkSelected.val(),name: name, id_value: valueSelected };
       console.log(data);
@@ -102,6 +104,10 @@
           }
           $("div.spanner").toggleClass("show");
           $("#id_sub_category").removeAttr("disabled");
+        },
+        error: function(result){
+        $("div.spanner").removeClass("show");
+          $("#id_category").removeAttr("disabled");
         },
       });
     });
@@ -128,20 +134,24 @@
           for (var i = result.length - 1; i >= 0; i--) {
             if (result[i].id == subValueSelected){
               $("#id_sub_category").append("<option selected value=" + result[i].id + ">" + result[i].name + "</option>");
-            }else{ 
+            }else{
               $("#id_sub_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
             }
           }
           // $("div.spanner").toggleClass("show");
           $("#id_sub_category").removeAttr("disabled");
         },
+        error: function(result){
+        $("div.spanner").removeClass("show");
+          $("#id_sub_category").attr("disabled", "disabled");
+        },
       });
     } else {
       $("#id_sub_category").attr("disabled", "disabled");
+      console.log("Loading sub-category dropdown based on category using script: No category selected");
     }
     // -----
     var optionSelected = $("#id_framework").find("option:selected");
-    console.log(optionSelected);
     var valueSelected = optionSelected.val();
     var name = optionSelected.text();
     if (valueSelected) {
@@ -159,13 +169,61 @@
               $("#id_category").append("<option value=" + result[i].id + ">" + result[i].name + "</option>");
             }
           }
+
           $("div.spanner").removeClass("show");
           $("#id_category").removeAttr("disabled");
         },
+        error: function(result){
+        $("div.spanner").removeClass("show");
+
+        },
+
       });
     } else {
       $("#id_category").attr("disabled", "disabled");
+      console.log("Loading category dropdown based on framework using script: No framework selected");
     }
+  });
+
+  $(document).ready(()=>{
+    $(".language-option").click(function () {
+      var language = this.id;
+      var lan = 'en';
+      // data = { name: name, id_value: valueSelected };
+      var pathname = window.location.pathname;
+      console.log(pathname);
+
+      if(language == 'English'){
+        pathname = pathname.replace('/de/', '/en/')
+        lan = 'en';
+      }else if(language == 'Deutsch'){
+        pathname = pathname.replace('/en/', '/de/')
+        lan = 'de';
+      }
+
+      var temp = window.location.href;
+      temp = temp.replace(window.location.pathname, "/en/changelanguage/"+lan);
+      console.log(temp);
+
+      $.ajax({
+        type: "get",
+        url: temp, //
+        success: function (result) {
+          console.log("language changed");
+          console.log(pathname);
+       pathname = pathname.replace('/review-data/', '/dashboard/');
+       window.location.pathname = pathname;
+        },
+        error: function(e){
+          console.log("error"+e);
+          console.log(pathname);
+       pathname = pathname.replace('/review-data/', '/dashboard/');
+       window.location.pathname = pathname;
+        }
+      });
+
+
+    });
   });
 </script>
  

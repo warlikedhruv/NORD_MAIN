@@ -118,11 +118,15 @@ class QuestionAnswerForm(forms.Form):
     value = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'type': 'text', 'name': 'value',
                                                         'placeholder': 'Max Char 500', 'rows': 4,
                                                         'cols': 10}), max_length=500, required=False)
+
     comment = forms.CharField(widget=forms.Textarea(
         attrs={'class': 'form-control', 'type': 'text', 'name': 'comment', 'placeholder': 'Max Char 500', 'rows': 4,
                'cols': 10}), max_length=500, required=False)
     file = forms.FileField(widget=forms.ClearableFileInput(
         attrs={'class': 'form-control', 'multiple': True, 'name': 'file'}), required=False)
-    optional = forms.BooleanField(initial=False, required=False) 
+    optional = forms.BooleanField(initial=False, required=False)
+    goals = forms.BooleanField(initial=False, required=False)
+
+
     
 
